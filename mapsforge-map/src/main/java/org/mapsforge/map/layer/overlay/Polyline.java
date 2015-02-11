@@ -66,7 +66,7 @@ public class Polyline extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		if (this.latLongs.isEmpty() || this.paintStroke == null) {
 			return;
 		}

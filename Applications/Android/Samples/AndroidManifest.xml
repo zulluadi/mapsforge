@@ -22,7 +22,6 @@
         <activity android:name=".Samples" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -142,6 +141,10 @@
             android:name=".RotateMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Map rotation" />
+        <activity
+            android:name=".RotationMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Map Rotation (alpha)" />
         <activity
             android:name=".ItemListActivity"
             android:label="Fragments Item List"

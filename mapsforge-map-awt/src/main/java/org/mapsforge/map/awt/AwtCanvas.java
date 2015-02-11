@@ -202,6 +202,11 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void rotate(float theta, float px, float py) {
+		this.graphics2D.rotate(theta, px, py);
+	}
+
+	@Override
 	public void setBitmap(Bitmap bitmap) {
 		if (bitmap == null) {
 			this.bufferedImage = null;

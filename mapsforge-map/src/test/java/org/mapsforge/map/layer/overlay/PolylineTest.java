@@ -51,14 +51,14 @@ public class PolylineTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			polyline.draw(boundingBox, (byte) 0, canvas, point);
+			polyline.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			polyline.getLatLongs().add(new LatLong(0, 0, true));
 			polyline.getLatLongs().add(new LatLong(1, 1, true));
-			polyline.draw(boundingBox, (byte) 0, canvas, point);
+			polyline.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-			polyline.draw(boundingBox, (byte) 0, canvas, point);
+			polyline.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 		}
 	}
 

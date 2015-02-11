@@ -62,7 +62,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
 				this.displayModel.getTileSize());
 
@@ -135,7 +135,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	/**
 	 * Whether the tile is stale and should be refreshed.
 	 * <p>
-	 * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point)} to determine whether the tile needs to
+	 * This method is called from {@link Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, float, float, float)} to determine whether the tile needs to
 	 * be refreshed. Subclasses must override this method and implement appropriate checks to determine when a tile is
 	 * stale.
 	 * <p>

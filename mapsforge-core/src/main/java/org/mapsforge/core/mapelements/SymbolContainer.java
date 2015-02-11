@@ -69,7 +69,7 @@ public class SymbolContainer extends MapElementContainer {
 		return result;
 	}
 
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		matrix.reset();
 		matrix.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
 		if (theta != 0 && alignCenter) {

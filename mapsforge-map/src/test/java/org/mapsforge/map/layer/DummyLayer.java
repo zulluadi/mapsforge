@@ -23,7 +23,7 @@ public class DummyLayer extends Layer {
 	public int onRemoveCalls;
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		// do nothing
 	}
 

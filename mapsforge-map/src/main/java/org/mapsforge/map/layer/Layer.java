@@ -28,17 +28,18 @@ public abstract class Layer {
 
 	/**
 	 * Draws this {@code Layer} on the given canvas.
-	 * 
-	 * @param boundingBox
+	 *  @param boundingBox
 	 *            the geographical area which should be drawn.
 	 * @param zoomLevel
 	 *            the zoom level at which this {@code Layer} should draw itself.
 	 * @param canvas
-	 *            the canvas on which this {@code Layer} should draw itself.
+ *            the canvas on which this {@code Layer} should draw itself.
 	 * @param topLeftPoint
-	 *            the top-left pixel position of the canvas relative to the top-left map position.
+	 * @param rotationTheta
+	 * @param rotationPx
+	 * @param rotationPy
 	 */
-	public abstract void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint);
+	public abstract void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy);
 
 	/**
 	 * Gets the geographic position of this layer element, if it exists.
@@ -56,6 +57,10 @@ public abstract class Layer {
 	 */
 	public final boolean isVisible() {
 		return this.visible;
+	}
+
+	public boolean isRotatable() {
+		return true;
 	}
 
 	public void onDestroy() {

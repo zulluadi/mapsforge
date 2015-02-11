@@ -73,7 +73,7 @@ class CanvasRasterer {
 		Collections.sort(elementsAsList);
 
 		for (MapElementContainer element : elementsAsList) {
-			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
+			element.draw(canvas, tile.getOrigin(), this.symbolMatrix, 0, 0, 0);
 		}
 	}
 

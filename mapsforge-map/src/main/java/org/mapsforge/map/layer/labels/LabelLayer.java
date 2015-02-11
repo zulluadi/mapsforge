@@ -41,7 +41,7 @@ public class LabelLayer extends Layer {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 
 		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, displayModel.getTileSize());
 		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
@@ -53,7 +53,7 @@ public class LabelLayer extends Layer {
 		}
 
 		for (MapElementContainer item : elementsToDraw) {
-			item.draw(canvas, topLeftPoint, this.matrix);
+			item.draw(canvas, topLeftPoint, this.matrix, rotationTheta, rotationPx, rotationPy);
 		}
 	}
 

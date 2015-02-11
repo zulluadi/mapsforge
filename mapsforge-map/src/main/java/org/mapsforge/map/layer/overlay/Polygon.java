@@ -71,7 +71,7 @@ public class Polygon extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		if (this.latLongs.size() < 2 || (this.paintStroke == null && this.paintFill == null)) {
 			return;
 		}

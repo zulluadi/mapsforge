@@ -25,5 +25,8 @@ public interface Canvas extends GraphicContext {
 
 	int getWidth();
 
+	void rotate(float theta, float px, float py);
+
 	void setBitmap(Bitmap bitmap);
+
 }

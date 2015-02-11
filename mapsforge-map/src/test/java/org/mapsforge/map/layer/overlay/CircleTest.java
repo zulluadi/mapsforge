@@ -70,19 +70,19 @@ public class CircleTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			circle.setLatLong(new LatLong(0, 0, true));
-			circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			circle.setRadius(1);
-			circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			circle.setPaintFill(GRAPHIC_FACTORY.createPaint());
-			circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			circle.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-			circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 		}
 	}
 

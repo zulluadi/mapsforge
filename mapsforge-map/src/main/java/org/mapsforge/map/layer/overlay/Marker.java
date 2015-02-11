@@ -60,7 +60,7 @@ public class Marker extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		if (this.latLong == null || this.bitmap == null) {
 			return;
 		}

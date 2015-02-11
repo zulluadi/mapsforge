@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2013-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +25,6 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.reader.MapFile;
 
 /**
  * Demonstrates how to enable a LongPress on a layer.
@@ -80,8 +79,8 @@ public class LongPressAction extends RenderTheme4 {
 
 			@Override
 			public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
-					canvas, Point topLeftPoint) {
-				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+					canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
+				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotationTheta, rotationPx, rotationPy);
 
 				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 

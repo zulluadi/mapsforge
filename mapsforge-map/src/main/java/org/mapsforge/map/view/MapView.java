@@ -28,6 +28,10 @@ public interface MapView {
 
 	MapScaleBar getMapScaleBar();
 
+	float getRotationTheta();
+	float getRotationPx();
+	float getRotationPy();
+
 	void setMapScaleBar(MapScaleBar mapScaleBar);
 
 	/**
@@ -47,5 +51,9 @@ public interface MapView {
 	 * Requests a redrawing as soon as possible.
 	 */
 	void repaint();
+
+
+	void rotate(float degrees);
+	void rotate(float degrees, float px, float py);
 
 }

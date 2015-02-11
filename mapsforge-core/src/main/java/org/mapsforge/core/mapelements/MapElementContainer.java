@@ -85,12 +85,14 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	/**
 	 * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
 	 * using the matrix if rotation is required.
-	 *
-	 * @param canvas
+	 *  @param canvas
 	 * @param origin
 	 * @param matrix
+	 * @param rotationTheta
+	 * @param rotationPx
+	 * @param rotationPy
 	 */
-	public abstract void draw(Canvas canvas, Point origin, Matrix matrix);
+	public abstract void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy);
 
 	/**
 	 * Gets the pixel absolute boundary for this element.

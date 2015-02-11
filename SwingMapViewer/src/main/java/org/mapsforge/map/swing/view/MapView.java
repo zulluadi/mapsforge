@@ -46,6 +46,10 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final LayerManager layerManager;
 	private MapScaleBar mapScaleBar;
 	private final Model model;
+	private float rotationPx;
+	private float rotationPy;
+	private float rotationTheta;
+
 
 	public MapView() {
 		super();
@@ -105,6 +109,21 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
+	public float getRotationPx() {
+		return this.rotationPx;
+	}
+
+	@Override
+	public float getRotationPy() {
+		return this.rotationPy;
+	}
+
+	@Override
+	public float getRotationTheta() {
+		return this.rotationTheta;
+	}
+
+	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
 		this.mapScaleBar.destroy();
 		this.mapScaleBar=mapScaleBar;
@@ -124,4 +143,21 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.mapScaleBar.draw(graphicContext);
 		this.fpsCounter.draw(graphicContext);
 	}
+
+	@Override
+	public void rotate(float theta, float px, float py) {
+		this.rotationTheta = theta;
+	}
+
+	/**
+	 * Rotates the view by degrees around pivot point.
+	 * @param theta rotation angle.
+	 */
+	@Override
+	public void rotate(float theta) {
+		this.rotationTheta = theta;
+		this.rotationPx = this.getDimension().width / 2f;
+		this.rotationPy = this.getDimension().height / 2f;
+	}
+
 }

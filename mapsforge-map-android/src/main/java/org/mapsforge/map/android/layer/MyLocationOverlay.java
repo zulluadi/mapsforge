@@ -133,13 +133,13 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		if (!this.myLocationEnabled) {
 			return;
 		}
 
-		this.circle.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
-		this.marker.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+		this.circle.draw(boundingBox, zoomLevel, canvas, topLeftPoint, 0, 0, 0);
+		this.marker.draw(boundingBox, zoomLevel, canvas, topLeftPoint, 0, 0, 0);
 	}
 
 	/**

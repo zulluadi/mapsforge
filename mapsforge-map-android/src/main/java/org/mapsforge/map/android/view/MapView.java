@@ -56,6 +56,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private MapScaleBar mapScaleBar;
 	private final MapZoomControls mapZoomControls;
 	private final Model model;
+	private float rotationPx;
+	private float rotationPy;
+	private float rotationTheta;
 	private final TouchEventHandler touchEventHandler;
 
 	public MapView(Context context) {
@@ -128,6 +131,21 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
+	public float getRotationTheta() {
+		return this.rotationTheta;
+	}
+
+	@Override
+	public float getRotationPx() {
+		return this.rotationPx;
+	}
+
+	@Override
+	public float getRotationPy() {
+		return this.rotationPy;
+	}
+
+	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
@@ -166,6 +184,30 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		} else {
 			postInvalidate();
 		}
+	}
+
+	/**
+	 * Rotates the view by degrees around pivot point.
+	 * @param theta rotation angle.
+	 */
+	@Override
+	public void rotate(float theta) {
+		this.rotationTheta = theta;
+		this.rotationPx = this.getDimension().width / 2f;
+		this.rotationPy = this.getDimension().height / 2f;
+	}
+
+	/**
+	 * Rotates the view by degrees around pivot point.
+	 * @param theta rotation angle.
+	 * @param px pivot point x
+	 * @param py pivot point y
+	 */
+	@Override
+	public void rotate(float theta, float px, float py) {
+		this.rotationTheta = theta;
+		this.rotationPx = px;
+		this.rotationPy = py;
 	}
 
 	/**

@@ -24,7 +24,10 @@ public class MapViewDimension extends Observable {
 	 * @return the current dimension of the {@code MapView} (may be null).
 	 */
 	public synchronized Dimension getDimension() {
-		return this.dimension;
+		if (this.dimension != null) {
+			return new Dimension(dimension.width * 2, dimension.height * 2);
+		}
+		return null;
 	}
 
 	public void setDimension(Dimension dimension) {

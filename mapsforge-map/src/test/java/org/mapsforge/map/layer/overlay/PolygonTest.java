@@ -53,15 +53,15 @@ public class PolygonTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			polygon.draw(boundingBox, (byte) 0, canvas, point);
+			polygon.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			polygon.getLatLongs().add(new LatLong(0, 0, true));
 			polygon.getLatLongs().add(new LatLong(1, 1, true));
-			polygon.draw(boundingBox, (byte) 0, canvas, point);
+			polygon.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 
 			polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
 			polygon.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-			polygon.draw(boundingBox, (byte) 0, canvas, point);
+			polygon.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
 		}
 	}
 

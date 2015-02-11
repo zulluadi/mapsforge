@@ -43,7 +43,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
 
 		if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
 			return;

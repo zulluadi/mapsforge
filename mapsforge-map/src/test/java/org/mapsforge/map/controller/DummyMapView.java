@@ -61,6 +61,21 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
+	public float getRotationTheta() {
+		return 0;
+	}
+
+	@Override
+	public float getRotationPx() {
+		return 0;
+	}
+
+	@Override
+	public float getRotationPy() {
+		return 0;
+	}
+
+	@Override
 	public int getWidth() {
 		return 0;
 	}
@@ -73,6 +88,14 @@ public class DummyMapView implements MapView {
 	@Override
 	public MapScaleBar getMapScaleBar() {
 		return null;
+	}
+
+	@Override
+	public void rotate(float theta) {
+	}
+
+	@Override
+	public void rotate(float theta, float px, float py) {
 	}
 
 	@Override

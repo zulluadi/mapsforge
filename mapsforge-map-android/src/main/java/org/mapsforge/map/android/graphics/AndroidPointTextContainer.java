@@ -120,7 +120,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		if (!this.isVisible) {
 			return;
 		}
@@ -131,7 +131,12 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			// in this case we draw the precomputed staticLayout onto the canvas by translating
 			// the canvas.
 			androidCanvas.save();
-			androidCanvas.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
+			float x = (float) (this.xy.x - origin.x + boundary.left);
+			float y = (float) (this.xy.y - origin.y + boundary.top);
+			if (rotationTheta != 0) {
+				androidCanvas.rotate(-rotationTheta, x, y);
+			}
+			androidCanvas.translate(x, y);
 
 			if (this.backLayout != null) {
 				this.backLayout.draw(androidCanvas);
@@ -156,13 +161,21 @@ public class AndroidPointTextContainer extends PointTextContainer {
 					break;
 			}
 
-			float adjustedX = (float) (this.xy.x - origin.x);
-			float adjustedY = (float) (this.xy.y - origin.y) + textOffset;
+
+			androidCanvas.save();
+			float x = (float) (this.xy.x - origin.x);
+			float y = (float) (this.xy.y - origin.y) + textOffset;
+			if (rotationTheta != 0) {
+				androidCanvas.rotate(-rotationTheta, x, y);
+			}
+
+
 
 			if (this.paintBack != null) {
-				androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintBack));
+				androidCanvas.drawText(this.text, x, y, AndroidGraphicFactory.getPaint(this.paintBack));
 			}
-			androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintFront));
+			androidCanvas.drawText(this.text, x, y, AndroidGraphicFactory.getPaint(this.paintFront));
+			androidCanvas.restore();
 		}
 	}
 }

@@ -136,6 +136,11 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
+	public void rotate(float theta, float px, float py) {
+		this.canvas.rotate(theta, px, py);
+	}
+
+	@Override
 	public void setBitmap(Bitmap bitmap) {
 		this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
 	}

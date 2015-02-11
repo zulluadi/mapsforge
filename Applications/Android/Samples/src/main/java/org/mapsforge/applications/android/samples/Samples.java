@@ -177,6 +177,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)", null));
 
 		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer (alpha)", null));
+		linearLayout.addView(createButton(RotationMapViewer.class, "Rotation (alpha)", null));
 
 	}
 

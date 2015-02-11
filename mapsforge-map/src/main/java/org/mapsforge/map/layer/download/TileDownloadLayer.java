@@ -48,12 +48,12 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
 		if (zoomLevel < this.tileSource.getZoomLevelMin() || zoomLevel > this.tileSource.getZoomLevelMax()) {
 			return;
 		}
 
-		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotationTheta, rotationPx, rotationPy);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	/**
 	 * Whether the tile is stale and should be refreshed.
 	 * <p>
-	 * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point)} to determine whether the tile needs to
+	 * This method is called from {@link org.mapsforge.map.layer.Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, float, float, float)} to determine whether the tile needs to
 	 * be refreshed.
 	 * <p>
 	 * A tile is considered stale if one or more of the following two conditions apply:
