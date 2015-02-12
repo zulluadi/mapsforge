@@ -144,11 +144,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.fpsCounter.draw(graphicContext);
 	}
 
-	@Override
-	public void rotate(float theta, float px, float py) {
-		this.rotationTheta = theta;
-	}
-
 	/**
 	 * Rotates the view by degrees around pivot point.
 	 * @param theta rotation angle.
@@ -158,6 +153,19 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.rotationTheta = theta;
 		this.rotationPx = this.getDimension().width / 2f;
 		this.rotationPy = this.getDimension().height / 2f;
+	}
+
+	/**
+	 * Rotates the view by degrees around pivot point.
+	 * @param theta rotation angle.
+	 * @param px pivot point x
+	 * @param py pivot point y
+	 */
+	@Override
+	public void rotate(float theta, float px, float py) {
+		this.rotationTheta = theta;
+		this.rotationPx = px;
+		this.rotationPy = py;
 	}
 
 }
