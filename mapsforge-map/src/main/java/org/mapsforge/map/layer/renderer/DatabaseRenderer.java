@@ -340,7 +340,7 @@ public class DatabaseRenderer implements RenderCallback {
 	public void renderAreaCaption(PolylineContainer way, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
 		Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, display, priority, caption, fill, stroke, null, position, maxTextWidth));
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, 0, 0, display, priority, caption, fill, stroke, null, position, maxTextWidth));
 	}
 
 	@Override
@@ -355,7 +355,7 @@ public class DatabaseRenderer implements RenderCallback {
 	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
 
-		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), display, priority, caption, fill,
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition, horizontalOffset, verticalOffset, display, priority, caption, fill,
 				stroke, null, position, maxTextWidth));
 	}
 

@@ -38,9 +38,11 @@ public class AndroidPointTextContainer extends PointTextContainer {
 	private float boxWidth;
 	private float boxHeight;
 
-	AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+	AndroidPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+	                          Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                          SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+		super(xy, horizontalOffset, verticalOffset, display, priority, text,
+				paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
 		if (this.textWidth > this.maxTextWidth) {
 
@@ -90,6 +92,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			this.boxHeight = textHeight;
 		}
 
+		// TODO Rotation: this will need to be recalculated depending on rotation angle.
 		switch (this.position) {
 			case CENTER:
 				boundary = new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
@@ -133,18 +136,23 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			// in this case we draw the precomputed staticLayout onto the canvas by translating
 			// the canvas.
 			androidCanvas.save();
-			float x = (float) (this.xy.x - origin.x + boundary.left);
-			float y = (float) (this.xy.y - origin.y + boundary.top);
+			double x = this.xy.x - origin.x;
+			double y = this.xy.y - origin.y;
 			if (rotation != null) {
-				androidCanvas.rotate(-rotation.degrees);
+				androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
+				Point rotated = rotation.rotate(x, y);
+				x = rotated.x;
+				y = rotated.y;
 			}
-			androidCanvas.translate(x, y);
+			x += boundary.left + this.horizontalOffset;
+			y += boundary.top + this.verticalOffset;
+
+			androidCanvas.translate((float) x, (float) y);
 
 			if (this.backLayout != null) {
 				this.backLayout.draw(androidCanvas);
 			}
 			this.frontLayout.draw(androidCanvas);
-			//debugDrawBounds(androidCanvas, (float) -boundary.left, (float) -boundary.top);
 			androidCanvas.restore();
 		} else {
 			// the origin of the text is the base line, so we need to make adjustments
@@ -163,29 +171,28 @@ public class AndroidPointTextContainer extends PointTextContainer {
 					break;
 			}
 
-
 			androidCanvas.save();
 			double x = (this.xy.x - origin.x);
-			double y = (this.xy.y - origin.y) + textOffset;
-			double X = 0d;
-			double Y = 0d;
+			double y = (this.xy.y - origin.y);
 			if (rotation != null) {
-				androidCanvas.rotate(-rotation.degrees);
+				androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
 				Point rotated = rotation.rotate(x, y);
-				X = rotated.x;
-				Y = rotated.y;
+				x = rotated.x;
+				y = rotated.y;
 			}
 
-			android.graphics.Paint paint = new android.graphics.Paint(AndroidGraphicFactory.getPaint(this.paintBack));
-			paint.setColor(0xffff0000);
+			// the offsets can only be applied after rotation, because the label needs to be rotated
+			// around its center.
+			x += this.horizontalOffset;
+			y += this.verticalOffset + textOffset; // the text offset has nothing to do with rotation, so add later
 
 			if (this.paintBack != null) {
 				androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
-				androidCanvas.drawText(this.text, (float) X, (float) Y, paint);
 			}
 			androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintFront));
-			androidCanvas.drawText(this.text, (float) X, (float) Y, paint);
-			androidCanvas.restore();
+			if (rotation != null) {
+				androidCanvas.restore();
+			}
 		}
 	}
 }

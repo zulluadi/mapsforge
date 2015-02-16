@@ -39,7 +39,8 @@ public interface GraphicFactory {
 
 	Path createPath();
 
-	PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+	PointTextContainer createPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+	                                            Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                                            SymbolContainer symbolContainer, Position position, int maxTextWidth);
 
 	ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;

@@ -52,6 +52,8 @@ public class WayTextContainer extends MapElementContainer {
 		Point adjustedStart = xy.offset(-origin.x, -origin.y);
 		Point adjustedEnd = end.offset(-origin.x, -origin.y);
 
+		// compute direction of text in presence of rotation, we want the text to read from left
+		// to right, so that characters are never upside down.
 		boolean swapDirection;
 		if (rotation != null) {
 			Point startRotated = xy.rotate(rotation);

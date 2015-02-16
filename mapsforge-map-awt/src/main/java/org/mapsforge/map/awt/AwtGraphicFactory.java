@@ -138,9 +138,11 @@ public class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+	public PointTextContainer createPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+	                                                   Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                                                   SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		return new AwtPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+		return new AwtPointTextContainer(xy, horizontalOffset, verticalOffset, display,
+				priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 	}
 
 	@Override

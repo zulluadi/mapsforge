@@ -36,9 +36,11 @@ import java.text.AttributedString;
 
 public class AwtPointTextContainer extends PointTextContainer {
 
-	AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+	AwtPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+	                      Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                      SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+		super(xy, horizontalOffset, verticalOffset, display, priority,
+				text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
 		this.boundary = computeBoundary();
 	}
