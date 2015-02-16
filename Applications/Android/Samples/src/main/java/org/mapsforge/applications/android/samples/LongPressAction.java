@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
@@ -79,8 +80,8 @@ public class LongPressAction extends RenderTheme4 {
 
 			@Override
 			public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
-					canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
-				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotationTheta, rotationPx, rotationPy);
+					canvas, Point topLeftPoint, final Rotation rotation) {
+				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
 
 				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 

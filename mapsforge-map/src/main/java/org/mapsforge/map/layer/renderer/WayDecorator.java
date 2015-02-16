@@ -76,13 +76,13 @@ final class WayDecorator {
 				previousX += diffX * segmentSkipPercentage;
 				previousY += diffY * segmentSkipPercentage;
 				if (rotate) {
-					// if we do not rotate theta will be 0, which is correct
+					// if we do not rotate radians will be 0, which is correct
 					theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
 				}
 
 				Point point = new Point(previousX, previousY);
 
-				currentItems.add(new SymbolContainer(point, display, priority, symbolBitmap, theta, alignCenter));
+				currentItems.add(new SymbolContainer(point, display, priority, symbolBitmap, theta, alignCenter, false));
 
 				// check if the symbolContainer should only be rendered once
 				if (!repeatSymbol) {
@@ -184,12 +184,9 @@ final class WayDecorator {
 			// is as small as possible. The offset at the beginning/end is to ensure that we are a bit off the center
 			// of an intersection (otherwise we have more collisions at the intersection)
 			LineSegment actuallyUsedSegment = drawableSegment.subSegment(WAYNAME_SAFETY_MARGIN, wayNameWidth - WAYNAME_SAFETY_MARGIN);
-			// check to prevent inverted way names
-			if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
-				currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
-			} else {
-				currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, display, priority, text, fill, stroke, textHeight));
-			}
+			// check to prevent inverted way names now happens when drawing, because with rotation we do
+			// not know the screen positions in advance any more.
+			currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
 
 			skipPixels = wayNameWidth;
 		}

@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 /**
  * The MapElementContainer is the abstract base class for annotations that can be placed on the
@@ -85,14 +86,12 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	/**
 	 * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
 	 * using the matrix if rotation is required.
-	 *  @param canvas
+	 * @param canvas
 	 * @param origin
 	 * @param matrix
-	 * @param rotationTheta
-	 * @param rotationPx
-	 * @param rotationPy
+	 * @param rotation
 	 */
-	public abstract void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy);
+	public abstract void draw(Canvas canvas, Point origin, Matrix matrix, final Rotation rotation);
 
 	/**
 	 * Gets the pixel absolute boundary for this element.

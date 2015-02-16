@@ -347,7 +347,7 @@ public class DatabaseRenderer implements RenderCallback {
 	public void renderAreaSymbol(PolylineContainer way, Display display, int priority, Bitmap symbol) {
 		Point centerPosition = way.getCenterAbsolute();
 
-		this.currentLabels.add(new SymbolContainer(centerPosition, display, priority, symbol));
+		this.currentLabels.add(new SymbolContainer(centerPosition, display, priority, symbol, true));
 	}
 
 	@Override
@@ -370,7 +370,7 @@ public class DatabaseRenderer implements RenderCallback {
 	@Override
 	public void renderPointOfInterestSymbol(PointOfInterest poi, Display display, int priority, Bitmap symbol, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
-		this.currentLabels.add(new SymbolContainer(poiPosition, display, priority, symbol));
+		this.currentLabels.add(new SymbolContainer(poiPosition, display, priority, symbol, true));
 	}
 
 	@Override

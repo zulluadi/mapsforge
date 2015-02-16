@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 public class WayTextContainer extends MapElementContainer {
 
@@ -46,9 +47,26 @@ public class WayTextContainer extends MapElementContainer {
 				Math.max(point.x, end.x), Math.max(point.y, end.y)).envelope(textHeight/2d);
 	}
 
-	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final Rotation rotation) {
+
 		Point adjustedStart = xy.offset(-origin.x, -origin.y);
 		Point adjustedEnd = end.offset(-origin.x, -origin.y);
+
+		boolean swapDirection;
+		if (rotation != null) {
+			Point startRotated = xy.rotate(rotation);
+			Point endRotated = end.rotate(rotation);
+			swapDirection = startRotated.x > endRotated.x;
+		} else {
+			swapDirection = end.x < xy.x;
+		}
+		if (swapDirection) {
+			// swap positions so that text is drawn from left to right.
+			// TODO: RTL languages
+			Point tmp = adjustedEnd;
+			adjustedEnd = adjustedStart;
+			adjustedStart = tmp;
+		}
 
 		if (this.paintBack != null) {
 			canvas.drawTextRotated(text, (int) (adjustedStart.x),

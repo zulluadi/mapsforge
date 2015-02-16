@@ -17,6 +17,7 @@ package org.mapsforge.map.view;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
@@ -28,9 +29,7 @@ public interface MapView {
 
 	MapScaleBar getMapScaleBar();
 
-	float getRotationTheta();
-	float getRotationPx();
-	float getRotationPy();
+	Rotation getMapRotation();
 
 	void setMapScaleBar(MapScaleBar mapScaleBar);
 

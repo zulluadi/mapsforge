@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Rotation;
 
 import android.graphics.PorterDuff;
 import android.graphics.Region;
@@ -136,8 +137,10 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
-	public void rotate(float theta, float px, float py) {
-		this.canvas.rotate(theta, px, py);
+	public void rotate(final Rotation rotation) {
+		if (rotation != null) {
+			this.canvas.rotate(rotation.degrees, rotation.px, rotation.py);
+		}
 	}
 
 	@Override

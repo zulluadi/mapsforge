@@ -52,13 +52,13 @@ public class MarkerTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			marker.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
+			marker.draw(boundingBox, (byte) 0, canvas, point, null);
 
 			marker.setLatLong(new LatLong(0, 0, true));
-			marker.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
+			marker.draw(boundingBox, (byte) 0, canvas, point, null);
 
 			marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
-			marker.draw(boundingBox, (byte) 0, canvas, point, 0, 0, 0);
+			marker.draw(boundingBox, (byte) 0, canvas, point, null);
 		}
 	}
 

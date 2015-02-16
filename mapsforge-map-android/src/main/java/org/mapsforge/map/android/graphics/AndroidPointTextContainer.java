@@ -20,6 +20,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
@@ -28,6 +29,7 @@ import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 public class AndroidPointTextContainer extends PointTextContainer {
 
@@ -120,7 +122,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final Rotation rotation) {
 		if (!this.isVisible) {
 			return;
 		}
@@ -133,8 +135,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			androidCanvas.save();
 			float x = (float) (this.xy.x - origin.x + boundary.left);
 			float y = (float) (this.xy.y - origin.y + boundary.top);
-			if (rotationTheta != 0) {
-				androidCanvas.rotate(-rotationTheta, x, y);
+			if (rotation != null) {
+				androidCanvas.rotate(-rotation.degrees);
 			}
 			androidCanvas.translate(x, y);
 
@@ -163,18 +165,26 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
 
 			androidCanvas.save();
-			float x = (float) (this.xy.x - origin.x);
-			float y = (float) (this.xy.y - origin.y) + textOffset;
-			if (rotationTheta != 0) {
-				androidCanvas.rotate(-rotationTheta, x, y);
+			double x = (this.xy.x - origin.x);
+			double y = (this.xy.y - origin.y) + textOffset;
+			double X = 0d;
+			double Y = 0d;
+			if (rotation != null) {
+				androidCanvas.rotate(-rotation.degrees);
+				Point rotated = rotation.rotate(x, y);
+				X = rotated.x;
+				Y = rotated.y;
 			}
 
-
+			android.graphics.Paint paint = new android.graphics.Paint(AndroidGraphicFactory.getPaint(this.paintBack));
+			paint.setColor(0xffff0000);
 
 			if (this.paintBack != null) {
-				androidCanvas.drawText(this.text, x, y, AndroidGraphicFactory.getPaint(this.paintBack));
+				androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
+				androidCanvas.drawText(this.text, (float) X, (float) Y, paint);
 			}
-			androidCanvas.drawText(this.text, x, y, AndroidGraphicFactory.getPaint(this.paintFront));
+			androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintFront));
+			androidCanvas.drawText(this.text, (float) X, (float) Y, paint);
 			androidCanvas.restore();
 		}
 	}

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,20 +21,25 @@ import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 public class SymbolContainer extends MapElementContainer {
-	final boolean alignCenter;
+
+	private final boolean alignCanvas; // if it has a fixed angle to canvas.
+	private final boolean alignCenter;
 	public Bitmap symbol;
 	public final float theta;
 
-	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol) {
-		this(point, display, priority, symbol, 0, true);
+
+	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, boolean alignCanvas) {
+		this(point, display, priority, symbol, 0, true, true);
 	}
 
-	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, float theta, boolean alignCenter) {
+	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, float theta, boolean alignCenter, boolean alignCanvas) {
 		super(point, display, priority);
 		this.symbol = symbol;
 		this.theta = theta;
+		this.alignCanvas = alignCanvas;
 		this.alignCenter = alignCenter;
 		if (alignCenter) {
 			double halfWidth = this.symbol.getWidth() / 2d;
@@ -69,13 +74,19 @@ public class SymbolContainer extends MapElementContainer {
 		return result;
 	}
 
-	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final Rotation rotation) {
 		matrix.reset();
 		matrix.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
-		if (theta != 0 && alignCenter) {
-			matrix.rotate(theta, (float) -boundary.left, (float) -boundary.top);
+
+		float totalTheta = theta; // this is the rotation angle combined from map rotation and symbol rotation
+		if (rotation != null && this.alignCanvas) {
+			totalTheta -= rotation.radians;
+		}
+		// TODO ROTATION: compute positions when not center aligned
+		if (totalTheta != 0 && alignCenter) {
+			matrix.rotate(totalTheta, (float) -boundary.left, (float) -boundary.top);
 		} else {
-			matrix.rotate(theta);
+			matrix.rotate(totalTheta);
 		}
 		canvas.drawBitmap(this.symbol, matrix);
 	}

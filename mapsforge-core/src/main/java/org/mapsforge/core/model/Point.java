@@ -99,6 +99,17 @@ public class Point implements Comparable<Point>, Serializable {
 		return new Point(this.x + dx, this.y + dy);
 	}
 
+	/**
+	 * Rotates the point with @Rotation rotation. This method can be chained to apply multiple
+	 * rotations to one point.
+	 * @param rotation the rotation
+	 * @return a new rotated point.
+	 */
+	public Point rotate(Rotation rotation) {
+		return rotation.rotate(this);
+	}
+
+
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();

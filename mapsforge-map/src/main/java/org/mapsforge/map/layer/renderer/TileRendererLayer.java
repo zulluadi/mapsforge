@@ -136,7 +136,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	/**
 	 * Whether the tile is stale and should be refreshed.
 	 * <p>
-	 * This method is called from {@link org.mapsforge.map.layer.Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, float, float, float)} to determine whether the tile needs to
+	 * This method is called from {@link org.mapsforge.map.layer.Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, org.mapsforge.core.model.Rotation)} to determine whether the tile needs to
 	 * be refreshed.
 	 * <p>
 	 * A tile is considered stale if the timestamp of the layer's {@link #mapDataStore} is more recent than the

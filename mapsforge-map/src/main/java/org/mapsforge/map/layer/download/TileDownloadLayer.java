@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -48,12 +49,12 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
 		if (zoomLevel < this.tileSource.getZoomLevelMin() || zoomLevel > this.tileSource.getZoomLevelMax()) {
 			return;
 		}
 
-		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotationTheta, rotationPx, rotationPy);
+		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	/**
 	 * Whether the tile is stale and should be refreshed.
 	 * <p>
-	 * This method is called from {@link org.mapsforge.map.layer.Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, float, float, float)} to determine whether the tile needs to
+	 * This method is called from {@link org.mapsforge.map.layer.Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, org.mapsforge.core.model.Rotation)} to determine whether the tile needs to
 	 * be refreshed.
 	 * <p>
 	 * A tile is considered stale if one or more of the following two conditions apply:

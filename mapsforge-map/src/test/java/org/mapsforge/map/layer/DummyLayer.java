@@ -17,13 +17,14 @@ package org.mapsforge.map.layer;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 
 public class DummyLayer extends Layer {
 	public int onAddCalls;
 	public int onRemoveCalls;
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
 		// do nothing
 	}
 

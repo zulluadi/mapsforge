@@ -90,15 +90,10 @@ public class LayerManager extends PausableThread implements Redrawer {
 					float theta = 0f;
 					float px = 0f;
 					float py = 0f;
-					if (layer.isRotatable()) {
-						theta = this.mapView.getRotationTheta();
-						px = this.mapView.getRotationPx();
-						py = this.mapView.getRotationPy();
-						this.drawingCanvas.rotate(theta, px, py);
-					}
-					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, theta, px, py);
-					if (layer.isRotatable()) {
-						this.drawingCanvas.rotate(-theta, px, py);
+					this.drawingCanvas.rotate(this.mapView.getMapRotation());
+					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, this.mapView.getMapRotation());
+					if (this.mapView.getMapRotation() != null) {
+						this.drawingCanvas.rotate(this.mapView.getMapRotation().reverseRotation());
 					}
 				}
 			}

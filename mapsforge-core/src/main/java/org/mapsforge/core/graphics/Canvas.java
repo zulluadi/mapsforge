@@ -15,6 +15,7 @@
 package org.mapsforge.core.graphics;
 
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Rotation;
 
 public interface Canvas extends GraphicContext {
 	void destroy();
@@ -25,7 +26,7 @@ public interface Canvas extends GraphicContext {
 
 	int getWidth();
 
-	void rotate(float theta, float px, float py);
+	void rotate(final Rotation rotation);
 
 	void setBitmap(Bitmap bitmap);
 

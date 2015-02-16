@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -43,7 +44,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, final Rotation rotation) {
 
 		if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
 			return;

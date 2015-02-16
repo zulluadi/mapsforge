@@ -20,6 +20,7 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.util.LayerUtil;
@@ -41,7 +42,7 @@ public class LabelLayer extends Layer {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
 
 		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, displayModel.getTileSize());
 		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
@@ -53,7 +54,7 @@ public class LabelLayer extends Layer {
 		}
 
 		for (MapElementContainer item : elementsToDraw) {
-			item.draw(canvas, topLeftPoint, this.matrix, rotationTheta, rotationPx, rotationPy);
+			item.draw(canvas, topLeftPoint, this.matrix, rotation);
 		}
 	}
 

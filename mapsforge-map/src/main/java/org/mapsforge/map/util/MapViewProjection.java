@@ -18,6 +18,7 @@ package org.mapsforge.map.util;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.view.MapView;
 
@@ -47,6 +48,13 @@ public class MapViewProjection {
 		if (mapPosition == null) {
 			// this means somehow the mapview is not yet properly set up, see issue #308.
 			return null;
+		}
+
+		Rotation rotation = this.mapView.getMapRotation();
+		if (rotation != null) {
+			Point rotated = rotation.reverseRotation().rotate(x, y);
+			y = rotated.x;
+			x = rotated.y;
 		}
 
 		// calculate the pixel coordinates of the top left corner

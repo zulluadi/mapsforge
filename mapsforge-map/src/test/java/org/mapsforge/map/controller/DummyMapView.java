@@ -17,6 +17,7 @@ package org.mapsforge.map.controller;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
@@ -61,18 +62,8 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
-	public float getRotationTheta() {
-		return 0;
-	}
-
-	@Override
-	public float getRotationPx() {
-		return 0;
-	}
-
-	@Override
-	public float getRotationPy() {
-		return 0;
+	public Rotation getMapRotation() {
+		return null;
 	}
 
 	@Override

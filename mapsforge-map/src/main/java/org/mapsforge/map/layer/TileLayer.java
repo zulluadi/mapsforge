@@ -25,6 +25,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
@@ -62,7 +63,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
 		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
 				this.displayModel.getTileSize());
 
@@ -135,7 +136,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	/**
 	 * Whether the tile is stale and should be refreshed.
 	 * <p>
-	 * This method is called from {@link Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, float, float, float)} to determine whether the tile needs to
+	 * This method is called from {@link Layer#draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point, org.mapsforge.core.model.Rotation)} to determine whether the tile needs to
 	 * be refreshed. Subclasses must override this method and implement appropriate checks to determine when a tile is
 	 * stale.
 	 * <p>

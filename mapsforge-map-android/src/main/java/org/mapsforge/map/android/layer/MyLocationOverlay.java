@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.overlay.Circle;
@@ -133,13 +134,13 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final float rotationTheta, final float rotationPx, final float rotationPy) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
 		if (!this.myLocationEnabled) {
 			return;
 		}
 
-		this.circle.draw(boundingBox, zoomLevel, canvas, topLeftPoint, 0, 0, 0);
-		this.marker.draw(boundingBox, zoomLevel, canvas, topLeftPoint, 0, 0, 0);
+		this.circle.draw(boundingBox, zoomLevel, canvas, topLeftPoint, null);
+		this.marker.draw(boundingBox, zoomLevel, canvas, topLeftPoint, null);
 	}
 
 	/**

@@ -28,6 +28,7 @@ import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.MapScaleBar;
@@ -56,9 +57,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private MapScaleBar mapScaleBar;
 	private final MapZoomControls mapZoomControls;
 	private final Model model;
-	private float rotationPx;
-	private float rotationPy;
-	private float rotationTheta;
+	private Rotation rotation;
 	private final TouchEventHandler touchEventHandler;
 
 	public MapView(Context context) {
@@ -131,18 +130,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	public float getRotationTheta() {
-		return this.rotationTheta;
-	}
-
-	@Override
-	public float getRotationPx() {
-		return this.rotationPx;
-	}
-
-	@Override
-	public float getRotationPy() {
-		return this.rotationPy;
+	public Rotation getMapRotation() {
+		return this.rotation;
 	}
 
 	@Override
@@ -192,9 +181,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	 */
 	@Override
 	public void rotate(float theta) {
-		this.rotationTheta = theta;
-		this.rotationPx = this.getDimension().width / 2f;
-		this.rotationPy = this.getDimension().height / 2f;
+		this.rotate(theta, this.getDimension().width / 2f, this.getDimension().height / 2f);
 	}
 
 	/**
@@ -205,9 +192,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	 */
 	@Override
 	public void rotate(float theta, float px, float py) {
-		this.rotationTheta = theta;
-		this.rotationPx = px;
-		this.rotationPy = py;
+		this.rotation = new Rotation(theta, px, py);
 	}
 
 	/**
