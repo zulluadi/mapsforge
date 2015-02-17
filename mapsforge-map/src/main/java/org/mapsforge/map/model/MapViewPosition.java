@@ -19,6 +19,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
@@ -86,6 +87,9 @@ public class MapViewPosition extends Observable implements Persistable {
 	private static final String LONGITUDE = "longitude";
 	private static final String LONGITUDE_MAX = "longitudeMax";
 	private static final String LONGITUDE_MIN = "longitudeMin";
+	private static final String ROTATION_ANGLE = "rotationAngle";
+	private static final String ROTATION_PX = "rotationPx";
+	private static final String ROTATION_PY = "rotationPy";
 	private static final String ZOOM_LEVEL = "zoomLevel";
 	private static final String ZOOM_LEVEL_MAX = "zoomLevelMax";
 	private static final String ZOOM_LEVEL_MIN = "zoomLevelMin";
@@ -105,6 +109,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	private double longitude;
 	private BoundingBox mapLimit;
 	private LatLong pivot;
+	private Rotation rotation;
 	private double scaleFactor;
 	private final ZoomAnimator zoomAnimator;
 	private byte zoomLevel;
@@ -217,6 +222,10 @@ public class MapViewPosition extends Observable implements Persistable {
 		return null;
 	}
 
+	public Rotation getRotation() {
+		return this.rotation;
+	}
+
 	public synchronized double getScaleFactor() {
 		return this.scaleFactor;
 	}
@@ -240,6 +249,10 @@ public class MapViewPosition extends Observable implements Persistable {
 	public synchronized void init(PreferencesFacade preferencesFacade) {
 		this.latitude = preferencesFacade.getDouble(LATITUDE, 0);
 		this.longitude = preferencesFacade.getDouble(LONGITUDE, 0);
+		float rotationAngle = preferencesFacade.getFloat(ROTATION_ANGLE, 0);
+		float rotationPx = preferencesFacade.getFloat(ROTATION_PX, 0);
+		float rotationPy = preferencesFacade.getFloat(ROTATION_PY, 0);
+		this.rotation = new Rotation(rotationAngle, rotationPx, rotationPy);
 
 		double maxLatitude = preferencesFacade.getDouble(LATITUDE_MAX, Double.NaN);
 		double minLatitude = preferencesFacade.getDouble(LATITUDE_MIN, Double.NaN);
@@ -300,6 +313,15 @@ public class MapViewPosition extends Observable implements Persistable {
 	public synchronized void save(PreferencesFacade preferencesFacade) {
 		preferencesFacade.putDouble(LATITUDE, this.latitude);
 		preferencesFacade.putDouble(LONGITUDE, this.longitude);
+		if (this.rotation != null) {
+			preferencesFacade.putFloat(ROTATION_ANGLE, this.rotation.degrees);
+			preferencesFacade.putFloat(ROTATION_PX, this.rotation.px);
+			preferencesFacade.putFloat(ROTATION_PY, this.rotation.py);
+		} else {
+			preferencesFacade.putFloat(ROTATION_ANGLE, 0);
+			preferencesFacade.putFloat(ROTATION_PX, 0);
+			preferencesFacade.putFloat(ROTATION_PY, 0);
+		}
 
 		if (this.mapLimit == null) {
 			preferencesFacade.putDouble(LATITUDE_MAX, Double.NaN);
@@ -361,6 +383,12 @@ public class MapViewPosition extends Observable implements Persistable {
 	public void setPivot(LatLong pivot) {
 		synchronized (this) {
 			this.pivot = pivot;
+		}
+	}
+
+	public void setRotation(Rotation rotation) {
+		synchronized (this) {
+			this.rotation = rotation;
 		}
 	}
 

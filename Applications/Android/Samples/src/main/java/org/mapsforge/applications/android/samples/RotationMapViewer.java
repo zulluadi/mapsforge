@@ -18,17 +18,14 @@ import android.view.View;
 import android.widget.Button;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
- * A map viewer that draws the labels onto a single separate layer. The LabelLayer remains
- * experimental code and has some notable speed issues. Its use in production is currently not
- * recommended.
+ * Experimental viewer supporting map rotation, not production ready yet and with interface
+ * changes to come.
  */
-public class RotationMapViewer extends RenderTheme4 {
+public class RotationMapViewer extends LongPressAction {
 
 	private float rotation;
 
@@ -49,10 +46,8 @@ public class RotationMapViewer extends RenderTheme4 {
 
 	@Override
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);
-		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+		super.createLayers();
+		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileRendererLayer.getLabelStore());
 		mapView.getLayerManager().getLayers().add(labelLayer);
 		// add a grid layer and a layer showing tile coordinates
 		mapView.getLayerManager().getLayers()
@@ -74,4 +69,7 @@ public class RotationMapViewer extends RenderTheme4 {
 		return R.layout.rotation;
 	}
 
+	protected boolean renderLabels() {
+		return false;
+	}
 }

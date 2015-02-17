@@ -47,7 +47,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final LayerManager layerManager;
 	private MapScaleBar mapScaleBar;
 	private final Model model;
-	private Rotation rotation;
 
 
 	public MapView() {
@@ -109,7 +108,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 	@Override
 	public Rotation getMapRotation() {
-		return this.rotation;
+		return this.getModel().mapViewPosition.getRotation();
 	}
 
 	@Override
@@ -150,7 +149,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	 */
 	@Override
 	public void rotate(float theta, float px, float py) {
-		this.rotation = new Rotation(theta, px, py);
+		this.getModel().mapViewPosition.setRotation(new Rotation(theta, px, py));
 	}
 
 }

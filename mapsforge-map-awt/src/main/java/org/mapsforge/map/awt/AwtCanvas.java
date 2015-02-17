@@ -203,10 +203,20 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void restore() {
+		// no-op here
+	}
+
+	@Override
 	public void rotate(final Rotation rotation) {
 		if (rotation != null) {
 			this.graphics2D.rotate(rotation.degrees, rotation.px, rotation.py);
 		}
+	}
+
+	@Override
+	public void save() {
+		// no-op here
 	}
 
 	@Override

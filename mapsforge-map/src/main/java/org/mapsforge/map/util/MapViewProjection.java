@@ -53,8 +53,8 @@ public class MapViewProjection {
 		Rotation rotation = this.mapView.getMapRotation();
 		if (rotation != null) {
 			Point rotated = rotation.reverseRotation().rotate(x, y);
-			y = rotated.x;
-			x = rotated.y;
+			x = rotated.x;
+			y = rotated.y;
 		}
 
 		// calculate the pixel coordinates of the top left corner

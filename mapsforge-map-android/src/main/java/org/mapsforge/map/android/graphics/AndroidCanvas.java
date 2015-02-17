@@ -137,10 +137,20 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
+	public void restore() {
+		this.canvas.restore();
+	}
+
+	@Override
 	public void rotate(final Rotation rotation) {
 		if (rotation != null) {
 			this.canvas.rotate(rotation.degrees, rotation.px, rotation.py);
 		}
+	}
+
+	@Override
+	public void save() {
+		this.canvas.save();
 	}
 
 	@Override

@@ -48,12 +48,14 @@ public class LongPressAction extends RenderTheme4 {
 
 	private int i;
 
+	protected TileRendererLayer tileRendererLayer;
+
 	@Override
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(
+		this.tileRendererLayer = new TileRendererLayer(
 				this.tileCaches.get(0), getMapFile(),
 				this.mapView.getModel().mapViewPosition,
-				false, true,
+				false, renderLabels(),
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point thisXY,
@@ -85,10 +87,19 @@ public class LongPressAction extends RenderTheme4 {
 
 				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 
-				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x);
-				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y);
+				double pixelX = MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x;
+				double pixelY = MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y;
 				String text = Integer.toString(count);
-				canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
+				canvas.save();
+				if (rotation != null) {
+					canvas.rotate(rotation.reverseRotation());
+					Point rotated = rotation.rotate(pixelX, pixelY);
+					pixelX = rotated.x;
+					pixelY = rotated.y;
+				}
+
+				canvas.drawText(text, (int) (pixelX - BLACK.getTextWidth(text) / 2), (int) (pixelY + BLACK.getTextHeight(text) / 2), BLACK);
+				canvas.restore();
 			}
 
 			@Override
@@ -126,5 +137,13 @@ public class LongPressAction extends RenderTheme4 {
 		this.mapView.getLayerManager().getLayers().add(tappableCircle);
 		tappableCircle.requestRedraw();
 
+	}
+
+	/**
+	 * Controls rendering of labels.
+	 * @return true if the labels should be rendered by the main layer
+	 */
+	protected boolean renderLabels() {
+		return true;
 	}
 }
