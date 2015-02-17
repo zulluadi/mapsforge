@@ -23,6 +23,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.PausableThread;
@@ -85,17 +86,15 @@ public class LayerManager extends PausableThread implements Redrawer {
 			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
 			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
 
+			Rotation rotation = this.mapView.getMapRotation();
+			this.drawingCanvas.rotate(this.mapView.getMapRotation());
 			for (Layer layer : this.layers) {
 				if (layer.isVisible()) {
-					float theta = 0f;
-					float px = 0f;
-					float py = 0f;
-					this.drawingCanvas.rotate(this.mapView.getMapRotation());
 					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, this.mapView.getMapRotation());
-					if (this.mapView.getMapRotation() != null) {
-						this.drawingCanvas.rotate(this.mapView.getMapRotation().reverseRotation());
-					}
 				}
+			}
+			if (rotation != null) {
+				this.drawingCanvas.rotate(rotation.reverseRotation());
 			}
 
 			if (!mapViewPosition.animationInProgress()) {
