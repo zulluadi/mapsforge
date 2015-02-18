@@ -82,6 +82,25 @@ public class RotationTest {
 
 	}
 
+	@Test
+	public void nullRotationTest() {
+
+		Rotation noRotation = new Rotation(0, 0, 1);
+
+		Point origin = new Point(22.22d, -44d);
+		Point result = Rotation.NULL_ROTATION.rotate(origin);
+		Assert.assertTrue(origin == result);
+
+		Assert.assertTrue(Rotation.NULL_ROTATION.reverseRotation() == Rotation.NULL_ROTATION);
+
+		result = noRotation.rotate(origin);
+		Assert.assertEquals(origin, result);
+		result = noRotation.reverseRotation().rotate(origin);
+		Assert.assertEquals(origin, result);
+		Assert.assertEquals(result, Rotation.NULL_ROTATION.rotate(origin));
+		Assert.assertTrue(result == Rotation.NULL_ROTATION.rotate(origin));
+
+	}
 
 	@Test
 	public void fieldsTest() {

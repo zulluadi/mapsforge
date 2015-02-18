@@ -17,6 +17,7 @@ package org.mapsforge.applications.android.samples;
 import android.view.View;
 import android.widget.Button;
 
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
@@ -27,16 +28,39 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
  */
 public class RotationMapViewer extends LongPressAction {
 
-	private float rotation;
+	private float rotationAngle;
 
 	@Override
 	protected void createControls() {
-		// Rotate button
-		Button rotateButton = (Button) findViewById(R.id.rotateButton);
-		rotateButton.setOnClickListener(new View.OnClickListener() {
+		// Three rotation buttons: rotate clockwise, reset, counterclockwise
+		Button rotateCWButton = (Button) findViewById(R.id.rotateClockwiseButton);
+		rotateCWButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				rotation += 15f;
+				rotationAngle += 15;
+				Rotation rotation = new Rotation(rotationAngle, mapView.getDimension().width / 2, mapView.getDimension().height / 2);
+				RotationMapViewer.this.mapView.rotate(rotation);
+				RotationMapViewer.this.redrawLayers();
+			}
+		});
+
+		Button rotateResetButton = (Button) findViewById(R.id.rotateResetButton);
+		rotateResetButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				rotationAngle = 0;
+				Rotation rotation = new Rotation(rotationAngle, mapView.getDimension().width / 2, mapView.getDimension().height / 2);
+				RotationMapViewer.this.mapView.rotate(rotation);
+				RotationMapViewer.this.redrawLayers();
+			}
+		});
+
+		Button rotateCCWButton = (Button) findViewById(R.id.rotateCounterClockWiseButton);
+		rotateCCWButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				rotationAngle -= 15;
+				Rotation rotation = new Rotation(rotationAngle, mapView.getDimension().width / 2, mapView.getDimension().height / 2);
 				RotationMapViewer.this.mapView.rotate(rotation);
 				RotationMapViewer.this.redrawLayers();
 			}

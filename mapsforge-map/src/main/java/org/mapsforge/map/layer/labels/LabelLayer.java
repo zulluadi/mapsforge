@@ -44,7 +44,7 @@ public class LabelLayer extends Layer {
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
 
-		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, displayModel.getTileSize());
+		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, rotation, zoomLevel, displayModel.getTileSize());
 		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
 			// only need to get new data set if either set of tiles changed or the label store
 			lastTileSet = currentTileSet;

@@ -26,6 +26,7 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.TilePosition;
@@ -54,7 +55,7 @@ public final class LayerUtil {
 		return tilePositions;
 	}
 
-	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
+	public static Set<Tile> getTiles(BoundingBox boundingBox, final Rotation rotation, byte zoomLevel, int tileSize) {
 		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);

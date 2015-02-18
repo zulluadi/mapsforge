@@ -175,23 +175,12 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	/**
-	 * Rotates the view by degrees around pivot point.
-	 * @param theta rotation angle.
+	 * Rotates the view with Rotation.
+	 * @param rotation the rotation definition.
 	 */
 	@Override
-	public void rotate(float theta) {
-		this.rotate(theta, this.getDimension().width / 2f, this.getDimension().height / 2f);
-	}
-
-	/**
-	 * Rotates the view by degrees around pivot point.
-	 * @param theta rotation angle.
-	 * @param px pivot point x
-	 * @param py pivot point y
-	 */
-	@Override
-	public void rotate(float theta, float px, float py) {
-		this.getModel().mapViewPosition.setRotation(new Rotation(theta, px, py));
+	public void rotate(final Rotation rotation) {
+		this.getModel().mapViewPosition.setRotation(rotation);
 	}
 
 	/**

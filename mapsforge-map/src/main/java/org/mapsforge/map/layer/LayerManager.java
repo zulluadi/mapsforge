@@ -80,17 +80,17 @@ public class LayerManager extends PausableThread implements Redrawer {
 		if (bitmap != null) {
 			this.drawingCanvas.setBitmap(bitmap);
 
-			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
-			Dimension canvasDimension = this.drawingCanvas.getDimension();
-			int tileSize = this.mapView.getModel().displayModel.getTileSize();
-			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
-			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
+			final MapPosition mapPosition = this.mapViewPosition.getMapPosition();
+			final Dimension canvasDimension = this.drawingCanvas.getDimension();
+			final int tileSize = this.mapView.getModel().displayModel.getTileSize();
+			final Rotation rotation = this.mapView.getMapRotation();
+			final BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, rotation, tileSize, canvasDimension);
+			final Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
 
-			Rotation rotation = this.mapView.getMapRotation();
-			this.drawingCanvas.rotate(this.mapView.getMapRotation());
+			this.drawingCanvas.rotate(rotation);
 			for (Layer layer : this.layers) {
 				if (layer.isVisible()) {
-					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, this.mapView.getMapRotation());
+					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, rotation);
 				}
 			}
 			if (rotation != null) {

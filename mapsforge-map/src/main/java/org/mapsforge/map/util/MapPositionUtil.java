@@ -20,10 +20,16 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 
+import java.util.logging.Logger;
+
 public final class MapPositionUtil {
-	public static BoundingBox getBoundingBox(MapPosition mapPosition, Dimension canvasDimension, int tileSize) {
+
+	private static final Logger LOGGER = Logger.getLogger(MapPositionUtil.class.getName());
+
+	public static BoundingBox getBoundingBox(MapPosition mapPosition, final Rotation rotation, int tileSize, Dimension canvasDimension) {
 
 		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, tileSize);
 		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapSize);
@@ -32,15 +38,47 @@ public final class MapPositionUtil {
 		int halfCanvasWidth = canvasDimension.width / 2;
 		int halfCanvasHeight = canvasDimension.height / 2;
 
-		double pixelXMin = Math.max(0, pixelX - halfCanvasWidth);
-		double pixelYMin = Math.max(0, pixelY - halfCanvasHeight);
-		double pixelXMax = Math.min(mapSize, pixelX + halfCanvasWidth);
-		double pixelYMax = Math.min(mapSize, pixelY + halfCanvasHeight);
+		double left = pixelX - halfCanvasWidth;
+		double top = pixelY - halfCanvasHeight;
+		double right = pixelX + halfCanvasWidth;
+		double bottom = pixelY + halfCanvasHeight;
 
-		double minLatitude = MercatorProjection.pixelYToLatitude(pixelYMax, mapSize);
-		double minLongitude = MercatorProjection.pixelXToLongitude(pixelXMin, mapSize);
-		double maxLatitude = MercatorProjection.pixelYToLatitude(pixelYMin, mapSize);
-		double maxLongitude = MercatorProjection.pixelXToLongitude(pixelXMax, mapSize);
+		double pixelXMin = Math.max(0, left);
+		double pixelYMin = Math.max(0, top);
+		double pixelXMax = Math.min(mapSize, right);
+		double pixelYMax = Math.min(mapSize, bottom);
+
+
+		double minLatitude;
+		double minLongitude;
+		double maxLatitude;
+		double maxLongitude;
+
+		if (Rotation.noRotation(rotation)) {
+			minLatitude = MercatorProjection.pixelYToLatitude(pixelYMax, mapSize);
+			minLongitude = MercatorProjection.pixelXToLongitude(pixelXMin, mapSize);
+			maxLatitude = MercatorProjection.pixelYToLatitude(pixelYMin, mapSize);
+			maxLongitude = MercatorProjection.pixelXToLongitude(pixelXMax, mapSize);
+		} else {
+			Rotation mapRotation = new Rotation(-rotation.degrees, (float) pixelX, (float) pixelY);
+			Point lowerRight = mapRotation.rotate(right, bottom);
+			Point upperLeft = mapRotation.rotate(left, top);
+			minLatitude = MercatorProjection.pixelYToLatitude(Math.max(0, Math.min(mapSize, lowerRight.y)), mapSize);
+			minLongitude = MercatorProjection.pixelXToLongitude(Math.max(0, Math.min(mapSize, upperLeft.x)), mapSize);
+			maxLatitude = MercatorProjection.pixelYToLatitude(Math.max(0, Math.min(mapSize, upperLeft.y)), mapSize);
+			maxLongitude = MercatorProjection.pixelXToLongitude(Math.max(0, Math.min(mapSize, lowerRight.x)), mapSize);
+
+			if (minLatitude > maxLatitude) {
+				double tmp = minLatitude;
+				minLatitude = maxLatitude;
+				maxLatitude = tmp;
+			}
+			if (minLongitude > maxLongitude) {
+				double tmp = minLongitude;
+				minLongitude = maxLongitude;
+				maxLongitude = tmp;
+			}
+		}
 
 		return new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
 	}

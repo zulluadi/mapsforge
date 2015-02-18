@@ -63,7 +63,7 @@ public class DummyMapView implements MapView {
 
 	@Override
 	public Rotation getMapRotation() {
-		return null;
+		return Rotation.NULL_ROTATION;
 	}
 
 	@Override
@@ -82,11 +82,7 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
-	public void rotate(float theta) {
-	}
-
-	@Override
-	public void rotate(float theta, float px, float py) {
+	public void rotate(final Rotation rotation) {
 	}
 
 	@Override

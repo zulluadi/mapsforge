@@ -51,8 +51,6 @@ public interface MapView {
 	 */
 	void repaint();
 
-
-	void rotate(float degrees);
-	void rotate(float degrees, float px, float py);
+	void rotate(final Rotation rotation);
 
 }

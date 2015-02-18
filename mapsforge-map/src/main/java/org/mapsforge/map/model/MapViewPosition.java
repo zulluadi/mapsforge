@@ -122,6 +122,7 @@ public class MapViewPosition extends Observable implements Persistable {
 		this.zoomLevelMax = Byte.MAX_VALUE;
 		this.zoomAnimator = new ZoomAnimator();
 		this.zoomAnimator.start();
+		this.rotation = Rotation.NULL_ROTATION;
 	}
 
 	/**
@@ -313,15 +314,9 @@ public class MapViewPosition extends Observable implements Persistable {
 	public synchronized void save(PreferencesFacade preferencesFacade) {
 		preferencesFacade.putDouble(LATITUDE, this.latitude);
 		preferencesFacade.putDouble(LONGITUDE, this.longitude);
-		if (this.rotation != null) {
-			preferencesFacade.putFloat(ROTATION_ANGLE, this.rotation.degrees);
-			preferencesFacade.putFloat(ROTATION_PX, this.rotation.px);
-			preferencesFacade.putFloat(ROTATION_PY, this.rotation.py);
-		} else {
-			preferencesFacade.putFloat(ROTATION_ANGLE, 0);
-			preferencesFacade.putFloat(ROTATION_PX, 0);
-			preferencesFacade.putFloat(ROTATION_PY, 0);
-		}
+		preferencesFacade.putFloat(ROTATION_ANGLE, this.rotation.degrees);
+		preferencesFacade.putFloat(ROTATION_PX, this.rotation.px);
+		preferencesFacade.putFloat(ROTATION_PY, this.rotation.py);
 
 		if (this.mapLimit == null) {
 			preferencesFacade.putDouble(LATITUDE_MAX, Double.NaN);

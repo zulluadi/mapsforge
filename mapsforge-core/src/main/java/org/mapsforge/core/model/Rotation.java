@@ -24,6 +24,11 @@ import java.io.Serializable;
 public class Rotation implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public static final Rotation NULL_ROTATION = new Rotation(0, 0, 0);
+	public static final boolean noRotation(Rotation rotation) {
+		return NULL_ROTATION == rotation || rotation == null || rotation.degrees == 0;
+	}
+
 	public final float degrees;
 	public final float px;
 	public final float py;
@@ -41,6 +46,9 @@ public class Rotation implements Serializable {
 	 * @return
 	 */
 	public Rotation reverseRotation() {
+		if (noRotation(this)) {
+			return this;
+		}
 		return new Rotation(-this.degrees, px, py);
 	}
 
@@ -51,6 +59,9 @@ public class Rotation implements Serializable {
 	 * @return the rotated point.
 	 */
 	public Point rotate(Point p) {
+		if (noRotation(this)) {
+			return p;
+		}
 		return rotate(p.x, p.y);
 	}
 
@@ -62,6 +73,9 @@ public class Rotation implements Serializable {
 	 * @return the rotated point.
 	 */
 	public Point rotate(double x, double y) {
+		if (noRotation(this)) {
+			return new Point(x, y);
+		}
 		double cosTheta = Math.cos(this.radians);
 		double sinTheta = Math.sin(this.radians);
 		double rotatedX = (x - this.px) * cosTheta - (y - this.py) * sinTheta + this.px;
@@ -77,6 +91,12 @@ public class Rotation implements Serializable {
 			return false;
 		}
 		Rotation other = (Rotation) obj;
+		if (noRotation(this)) {
+			return noRotation(other);
+		}
+		if (noRotation(other)) {
+			return noRotation(this);
+		}
 		if (Float.floatToIntBits(this.px) != Float.floatToIntBits(other.px)) {
 			return false;
 		}
@@ -106,12 +126,15 @@ public class Rotation implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("radians=");
-		stringBuilder.append(this.radians);
-		stringBuilder.append("px=");
+		stringBuilder.append("degrees=");
+		stringBuilder.append(this.degrees);
+		stringBuilder.append(", px=");
 		stringBuilder.append(this.px);
 		stringBuilder.append(", py=");
 		stringBuilder.append(this.py);
+		stringBuilder.append(", (radians=");
+		stringBuilder.append(this.radians);
+		stringBuilder.append(")");
 		return stringBuilder.toString();
 	}
 }

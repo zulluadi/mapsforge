@@ -45,9 +45,8 @@ public class DualOverviewMapViewer extends DualMapViewer {
 			@Override
 			protected void setCenter() {
 				super.setCenter();
-				BoundingBox bbox = MapPositionUtil.getBoundingBox(DualOverviewMapViewer.this.mapView.getModel().mapViewPosition.getMapPosition(),
-								DualOverviewMapViewer.this.mapView.getDimension(),
-								DualOverviewMapViewer.this.mapView.getModel().displayModel.getTileSize());
+				BoundingBox bbox = MapPositionUtil.getBoundingBox(DualOverviewMapViewer.this.mapView.getModel().mapViewPosition.getMapPosition(), DualOverviewMapViewer.this.mapView.getMapRotation(),
+						DualOverviewMapViewer.this.mapView.getModel().displayModel.getTileSize(), DualOverviewMapViewer.this.mapView.getDimension());
 				Paint paintStroke = Utils.createPaint(
 						AndroidGraphicFactory.INSTANCE.createColor(Color.RED),
 						2, Style.STROKE);

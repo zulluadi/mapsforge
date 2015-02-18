@@ -77,11 +77,11 @@ public class TileCoordinatesLayer extends Layer {
 		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
 				this.displayModel.getTileSize());
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
-			drawTileCoordinates(tilePositions.get(i), canvas);
+			drawTileCoordinates(tilePositions.get(i), rotation, canvas);
 		}
 	}
 
-	private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
+	private void drawTileCoordinates(TilePosition tilePosition, Rotation rotation, Canvas canvas) {
 		int x = (int) (tilePosition.point.x + 8 * displayModel.getScaleFactor());
 		int y = (int) (tilePosition.point.y + 24 * displayModel.getScaleFactor());
 		Tile tile = tilePosition.tile;
@@ -106,5 +106,13 @@ public class TileCoordinatesLayer extends Layer {
 		text = stringBuilder.toString();
 		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintBack);
 		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintFront);
+
+		stringBuilder.setLength(0);
+		stringBuilder.append("R: ");
+		stringBuilder.append(rotation.degrees);
+		stringBuilder.append(" (").append(rotation.px).append(" ").append(rotation.py).append(")");
+		text = stringBuilder.toString();
+		canvas.drawText(text, x, (int) (y + 72 * displayModel.getScaleFactor()), this.paintBack);
+		canvas.drawText(text, x, (int) (y + 72 * displayModel.getScaleFactor()), this.paintFront);
 	}
 }
