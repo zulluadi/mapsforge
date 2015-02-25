@@ -234,6 +234,21 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void setBitmap(Bitmap bitmap, Rotation rotation) {
+		if (bitmap == null) {
+			this.bufferedImage = null;
+			this.graphics2D = null;
+		} else {
+			this.bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
+			this.graphics2D = this.bufferedImage.createGraphics();
+			enableAntiAliasing();
+			this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			this.graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		}
+	}
+
+
+	@Override
 	public void setClip(int left, int top, int width, int height) {
 		this.graphics2D.setClip(left, top, width, height);
 	}

@@ -20,14 +20,12 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 
-import java.util.logging.Logger;
-
 public final class MapPositionUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(MapPositionUtil.class.getName());
 
 	public static BoundingBox getBoundingBox(MapPosition mapPosition, final Rotation rotation, int tileSize, Dimension canvasDimension) {
 
@@ -60,26 +58,17 @@ public final class MapPositionUtil {
 			maxLatitude = MercatorProjection.pixelYToLatitude(pixelYMin, mapSize);
 			maxLongitude = MercatorProjection.pixelXToLongitude(pixelXMax, mapSize);
 		} else {
-			Rotation mapRotation = new Rotation(-rotation.degrees, (float) pixelX, (float) pixelY);
+			Rotation mapRotation = new Rotation(rotation.degrees, (float) pixelX, (float) pixelY);
 			Point lowerRight = mapRotation.rotate(right, bottom);
 			Point upperLeft = mapRotation.rotate(left, top);
-			minLatitude = MercatorProjection.pixelYToLatitude(Math.max(0, Math.min(mapSize, lowerRight.y)), mapSize);
-			minLongitude = MercatorProjection.pixelXToLongitude(Math.max(0, Math.min(mapSize, upperLeft.x)), mapSize);
-			maxLatitude = MercatorProjection.pixelYToLatitude(Math.max(0, Math.min(mapSize, upperLeft.y)), mapSize);
-			maxLongitude = MercatorProjection.pixelXToLongitude(Math.max(0, Math.min(mapSize, lowerRight.x)), mapSize);
-
-			if (minLatitude > maxLatitude) {
-				double tmp = minLatitude;
-				minLatitude = maxLatitude;
-				maxLatitude = tmp;
-			}
-			if (minLongitude > maxLongitude) {
-				double tmp = minLongitude;
-				minLongitude = maxLongitude;
-				maxLongitude = tmp;
-			}
+			Point lowerLeft = mapRotation.rotate(left, bottom);
+			Point upperRight = mapRotation.rotate(right, top);
+			Rectangle envelope = new Rectangle(lowerLeft, upperLeft, lowerRight, upperRight);
+			minLatitude = MercatorProjection.pixelYToLatitude(Math.max(0, Math.min(mapSize, envelope.bottom)), mapSize);
+			minLongitude = MercatorProjection.pixelXToLongitude(Math.max(0, Math.min(mapSize, envelope.left)), mapSize);
+			maxLatitude = MercatorProjection.pixelYToLatitude(Math.max(0, Math.min(mapSize, envelope.top)), mapSize);
+			maxLongitude = MercatorProjection.pixelXToLongitude(Math.max(0, Math.min(mapSize, envelope.right)), mapSize);
 		}
-
 		return new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
 	}
 

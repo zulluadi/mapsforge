@@ -181,6 +181,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	@Override
 	public void rotate(final Rotation rotation) {
 		this.getModel().mapViewPosition.setRotation(rotation);
+		repaint();
 	}
 
 	/**
@@ -200,7 +201,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	@Override
 	protected void onDraw(Canvas androidCanvas) {
 		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
-		this.frameBuffer.draw(graphicContext);
+		this.frameBuffer.draw(graphicContext, getMapRotation());
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.draw(graphicContext);
 		}
@@ -228,6 +229,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	@Override
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+		if (getMapRotation() != Rotation.NULL_ROTATION) {
+			width = (int) Math.hypot(width, height);
+			height = width;
+		}
 		this.model.mapViewDimension.setDimension(new Dimension(width, height));
 	}
 

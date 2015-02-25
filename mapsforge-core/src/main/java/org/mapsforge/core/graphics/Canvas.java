@@ -32,5 +32,7 @@ public interface Canvas extends GraphicContext {
 
 	void setBitmap(Bitmap bitmap);
 
+	void setBitmap(Bitmap bitmap, Rotation rotation);
+
 	void restore();
 }

@@ -58,8 +58,8 @@ public class RotationTest {
 		Assert.assertEquals(origin, result);
 
 		result = origin.rotate(aroundOrigin);
-		Assert.assertEquals(-origin.y, result.x, 0.0001);
-		Assert.assertEquals(origin.x, result.y, 0.0001);
+		Assert.assertEquals(origin.y, result.x, 0.0001);
+		Assert.assertEquals(-origin.x, result.y, 0.0001);
 
 		result = fullRotation.rotate(origin);
 		Assert.assertEquals(origin.x, result.x, 0.0001);

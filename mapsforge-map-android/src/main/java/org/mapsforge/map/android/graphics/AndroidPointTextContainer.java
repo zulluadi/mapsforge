@@ -138,9 +138,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			androidCanvas.save();
 			double x = this.xy.x - origin.x;
 			double y = this.xy.y - origin.y;
-			if (rotation != null) {
+			if (!Rotation.noRotation(rotation)) {
 				androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
-				Point rotated = rotation.rotate(x, y);
+				Point rotated = rotation.rotate(x, y, true);
 				x = rotated.x;
 				y = rotated.y;
 			}
@@ -171,12 +171,12 @@ public class AndroidPointTextContainer extends PointTextContainer {
 					break;
 			}
 
-			androidCanvas.save();
 			double x = (this.xy.x - origin.x);
 			double y = (this.xy.y - origin.y);
-			if (rotation != null) {
+			if (!Rotation.noRotation(rotation)) {
+				androidCanvas.save();
 				androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
-				Point rotated = rotation.rotate(x, y);
+				Point rotated = rotation.rotate(x, y, true);
 				x = rotated.x;
 				y = rotated.y;
 			}
@@ -190,7 +190,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
 			}
 			androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintFront));
-			if (rotation != null) {
+			if (!Rotation.noRotation(rotation)) {
 				androidCanvas.restore();
 			}
 		}

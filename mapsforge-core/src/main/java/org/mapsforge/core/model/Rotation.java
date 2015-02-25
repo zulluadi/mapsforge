@@ -45,9 +45,9 @@ public class Rotation implements Serializable {
 	 * Returns a new @Rotation object with angle reversed.
 	 * @return
 	 */
-	public Rotation reverseRotation() {
+	public final Rotation reverseRotation() {
 		if (noRotation(this)) {
-			return this;
+			return NULL_ROTATION;
 		}
 		return new Rotation(-this.degrees, px, py);
 	}
@@ -58,11 +58,15 @@ public class Rotation implements Serializable {
 	 * @param p the input point.
 	 * @return the rotated point.
 	 */
-	public Point rotate(Point p) {
-		if (noRotation(this)) {
+	public final Point rotate(Point p) {
+		return rotate(p, false);
+	}
+
+	public final Point rotate(Point p, boolean reverse) {
+		if (NULL_ROTATION == this) {
 			return p;
 		}
-		return rotate(p.x, p.y);
+		return rotate(p.x, p.y, reverse);
 	}
 
 	/**
@@ -72,15 +76,15 @@ public class Rotation implements Serializable {
 	 * @param y pivot point y.
 	 * @return the rotated point.
 	 */
-	public Point rotate(double x, double y) {
-		if (noRotation(this)) {
-			return new Point(x, y);
+	public final Point rotate(double x, double y) {
+		return rotate(x, y, false);
+	}
+
+	public final Point rotate(double x, double y, boolean reverse) {
+		if (reverse) {
+			return rotateInternal(this.radians, x, y);
 		}
-		double cosTheta = Math.cos(this.radians);
-		double sinTheta = Math.sin(this.radians);
-		double rotatedX = (x - this.px) * cosTheta - (y - this.py) * sinTheta + this.px;
-		double rotatedY = (x - this.px) * sinTheta + (y - this.py) * cosTheta + this.py;
-		return new Point(rotatedX, rotatedY);
+		return rotateInternal(-this.radians, x, y);
 	}
 
 	@Override
@@ -136,5 +140,17 @@ public class Rotation implements Serializable {
 		stringBuilder.append(this.radians);
 		stringBuilder.append(")");
 		return stringBuilder.toString();
+	}
+
+
+	private final Point rotateInternal(double radians, double x, double y) {
+		if (NULL_ROTATION == this) {
+			return new Point(x, y);
+		}
+		double cosTheta = Math.cos(radians);
+		double sinTheta = Math.sin(radians);
+		double rotatedX = (x - this.px) * cosTheta - (y - this.py) * sinTheta + this.px;
+		double rotatedY = (x - this.px) * sinTheta + (y - this.py) * cosTheta + this.py;
+		return new Point(rotatedX, rotatedY);
 	}
 }

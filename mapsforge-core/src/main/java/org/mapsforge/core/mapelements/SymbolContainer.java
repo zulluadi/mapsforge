@@ -79,7 +79,7 @@ public class SymbolContainer extends MapElementContainer {
 		matrix.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
 
 		float totalTheta = theta; // this is the rotation angle combined from map rotation and symbol rotation
-		if (rotation != null && this.alignCanvas) {
+		if (!Rotation.noRotation(rotation) && this.alignCanvas) {
 			totalTheta -= rotation.radians;
 		}
 		// TODO ROTATION: compute positions when not center aligned

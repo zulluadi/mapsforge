@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
@@ -63,7 +64,7 @@ public class FrameBuffer {
 		destroyBitmaps();
 	}
 
-	public synchronized void draw(GraphicContext graphicContext) {
+	public synchronized void draw(GraphicContext graphicContext, Rotation rotation) {
 		graphicContext.fillColor(this.displayModel.getBackgroundColor());
 		if (this.bitmap1 != null) {
 			graphicContext.drawBitmap(this.bitmap1, this.matrix);

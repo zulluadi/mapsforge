@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
@@ -33,8 +34,10 @@ import org.mapsforge.map.layer.TilePosition;
 
 public final class LayerUtil {
 
-	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint,
-			int tileSize) {
+	private static final Logger LOGGER = Logger.getLogger(LayerUtil.class.getName());
+
+
+	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, final Rotation rotation, int tileSize, Point topLeftPoint) {
 		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
@@ -68,6 +71,12 @@ public final class LayerUtil {
 				tiles.add(new Tile(tileX, tileY, zoomLevel, tileSize));
 			}
 		}
+
+		LOGGER.severe("Rotation Tiles org  --------------------- " );
+		for (Tile tile : tiles) {
+			LOGGER.severe("Rotation tile " + tile);
+		}
+
 		return tiles;
 	}
 

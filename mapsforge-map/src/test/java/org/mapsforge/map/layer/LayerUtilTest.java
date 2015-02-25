@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.util.LayerUtil;
 
@@ -31,8 +32,8 @@ public class LayerUtilTest {
 	public void getTilePositionsTest() {
 		for (int tileSize : TILE_SIZES) {
 			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-			List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, new Point(0, 0),
-					tileSize);
+			List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, Rotation.NULL_ROTATION,
+					tileSize, new Point(0, 0));
 			Assert.assertEquals(1, tilePositions.size());
 
 			TilePosition tilePosition = tilePositions.get(0);

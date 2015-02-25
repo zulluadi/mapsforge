@@ -159,6 +159,14 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
+	public void setBitmap(Bitmap bitmap, Rotation rotation) {
+		this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
+		//android.graphics.Matrix matrix = new android.graphics.Matrix();
+		//matrix.preRotate(rotation.degrees, rotation.px, rotation.py);
+		//this.canvas.setMatrix(matrix);
+	}
+
+	@Override
 	public void setClip(int left, int top, int width, int height) {
 		this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
 	}

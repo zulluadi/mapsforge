@@ -127,7 +127,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		super.paint(graphics);
 
 		GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
-		this.frameBuffer.draw(graphicContext);
+		this.frameBuffer.draw(graphicContext, getMapRotation());
 		this.mapScaleBar.draw(graphicContext);
 		this.fpsCounter.draw(graphicContext);
 	}

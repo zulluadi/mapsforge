@@ -78,7 +78,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
 		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
-			this.drawingCanvas.setBitmap(bitmap);
+			this.drawingCanvas.setBitmap(bitmap, mapView.getMapRotation());
 
 			final MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			final Dimension canvasDimension = this.drawingCanvas.getDimension();
@@ -93,10 +93,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, rotation);
 				}
 			}
-			if (rotation != null) {
-				this.drawingCanvas.rotate(rotation.reverseRotation());
-			}
-
+			this.drawingCanvas.rotate(rotation.reverseRotation());
 			if (!mapViewPosition.animationInProgress()) {
 				// this causes a lot of flickering when an animation
 				// is in progress

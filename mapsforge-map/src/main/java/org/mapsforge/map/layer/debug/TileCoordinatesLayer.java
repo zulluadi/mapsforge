@@ -74,8 +74,8 @@ public class TileCoordinatesLayer extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, final Rotation rotation) {
-		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
-				this.displayModel.getTileSize());
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, rotation,
+				this.displayModel.getTileSize(), topLeftPoint);
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			drawTileCoordinates(tilePositions.get(i), rotation, canvas);
 		}
