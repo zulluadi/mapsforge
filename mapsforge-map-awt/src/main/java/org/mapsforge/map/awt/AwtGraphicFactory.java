@@ -1,8 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 Christian Pesch
- * Copyright © 2014 Develar
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 Christian Pesch
+ * Copyright 2014 Develar
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,12 +35,14 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
+
+import com.kitfox.svg.SVGCache;
 
 public class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
@@ -53,11 +56,11 @@ public class AwtGraphicFactory implements GraphicFactory {
 		return ((AwtMatrix) matrix).affineTransform;
 	}
 
-	static AwtPaint getAwtPaint(Paint paint) {
+	public static AwtPaint getPaint(Paint paint) {
 		return (AwtPaint) paint;
 	}
 
-	static AwtPath getAwtPath(Path path) {
+	static AwtPath getPath(Path path) {
 		return (AwtPath) path;
 	}
 
@@ -82,6 +85,14 @@ public class AwtGraphicFactory implements GraphicFactory {
 		}
 
 		throw new IllegalArgumentException("unknown color: " + color);
+	}
+
+	public static void clearResourceFileCache() {
+		// We don't use a resource file cache
+	}
+
+	public static void clearResourceMemoryCache() {
+		SVGCache.getSVGUniverse().clear();
 	}
 
 	@Override
@@ -133,6 +144,12 @@ public class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
+	public Paint createPaint(Paint paint) {
+		return new AwtPaint(paint);
+	}
+
+
+	@Override
 	public Path createPath() {
 		return new AwtPath();
 	}
@@ -166,8 +183,8 @@ public class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) {
-		return null;
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+		return new AwtSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
 	}
 
 }

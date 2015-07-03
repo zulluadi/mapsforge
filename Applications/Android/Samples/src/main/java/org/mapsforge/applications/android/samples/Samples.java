@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -170,7 +170,7 @@ public class Samples extends Activity {
 				"Changing Renderthemes", null));
 		linearLayout.addView(createButton(TileSizeChanger.class,
 				"Changing Tile Size", null));
-		linearLayout.addView(createButton(RotateMapViewer.class, "Rotate map view", null));
+		linearLayout.addView(createButton(RotateMapViewer.class, "Map Rotation (external)", null));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class,
 				"Stacked Tiles", null));
 		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout", null));

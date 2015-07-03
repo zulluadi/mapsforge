@@ -37,6 +37,8 @@ public interface GraphicFactory {
 
 	Paint createPaint();
 
+	Paint createPaint(Paint paint);
+
 	Path createPath();
 
 	PointTextContainer createPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,

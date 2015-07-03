@@ -21,6 +21,7 @@ import java.awt.Graphics;
 
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
@@ -30,10 +31,8 @@ import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
-import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
-import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
-import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
@@ -66,9 +65,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
 				this.model.displayModel);
-		((DefaultMapScaleBar) this.mapScaleBar).setScaleBarMode(ScaleBarMode.BOTH);
-		((DefaultMapScaleBar) this.mapScaleBar).setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
-		((DefaultMapScaleBar) this.mapScaleBar).setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
 	}
 
 	@Override
@@ -79,6 +75,13 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
 		}
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(), getMapRotation(),
+				getModel().displayModel.getTileSize(),
+				getDimension());
 	}
 
 	@Override

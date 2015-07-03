@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,11 +30,11 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -44,6 +44,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -161,6 +162,14 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		DisplayModel.setDeviceScaleFactor(metrics.scaledDensity);
 	}
 
+	public static void clearResourceFileCache() {
+		AndroidSvgBitmapStore.clear();
+	}
+
+	public static void clearResourceMemoryCache() {
+		AndroidResourceBitmap.clearResourceBitmaps();
+	}
+
 	@Override
 	public Bitmap createBitmap(int width, int height) {
 		return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
@@ -198,6 +207,12 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public Paint createPaint() {
 		return new AndroidPaint();
 	}
+
+	@Override
+	public Paint createPaint(Paint paint) {
+		return new AndroidPaint(paint);
+	}
+
 
 	@Override
 	public Path createPath() {
@@ -260,7 +275,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
 		// this allows loading of resource bitmaps from the Andorid assets folder
 		if (src.startsWith(PREFIX_ASSETS)) {
-			String pathName = src.substring(PREFIX_ASSETS.length());
+			String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src.substring(PREFIX_ASSETS.length());
 			InputStream inputStream = this.application.getAssets().open(pathName);
 			if (inputStream == null) {
 				throw new FileNotFoundException("resource not found: " + pathName);

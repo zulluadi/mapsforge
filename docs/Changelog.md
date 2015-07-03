@@ -2,8 +2,43 @@
 
 <wiki:toc />
 
-## New since release 0.5.0
+## New since 0.5.1
+ - Multi-threaded map rendering
+ - Hardware acceleration improvements
+ - Touch gesture improvements and fixes
+ - Geographic grid layer improvements
+ - Java painting enhancements
+ - Map writer tag-mapping improvements
+ - Render themes improvements
+ - Scale bar enhancements
+ - Zoom controls enhancements
+ - Map buffer size adjustable
+ - MyLocationOverlay move in Samples
+ - Many other minor improvements and bugfixes
+
+## Version 0.5.1
+ **2015-03-18**
+ - Same as 0.5.1-rc4
+ 
+## Version 0.5.1-rc4
+ - Fix for build of SwingMapViewer with new SVG libraries
+ 
+## Version 0.5.1-rc3
+ - SVG rendering for Java with SVG Salamander
+ - Internal rendertheme (osmarender) using SVG symbols by default
+ - Resource memory/file cache: common clear methods
+ 
+## Version 0.5.1-rc2
+ - Fix for NPE when using persistent tile cache.
+ - Doc updates
+ 
+## Version 0.5.1-rc1
  - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
+ - Persistent Caching.
+ - Documentation updates.
+ - Various bug fixes.
+ - Geographic grid layer.
+ - External Map Rotation example in Samples.
 
 ## Version 0.5.0
 **2014-12-08**

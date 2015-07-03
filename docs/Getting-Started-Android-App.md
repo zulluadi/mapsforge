@@ -6,6 +6,14 @@ The best way to get started building an Android app with mapsforge is by studyin
 
 Here, however, we go through a very basic example of an app that simply displays a map rendered from a mapfile in the built-in render style.  
 
+# Hardware acceleration
+
+Mapsforge currently requires disabling hardware acceleration for the map view. This can be controlled in various levels, better described in Android [documentation](http://developer.android.com/guide/topics/graphics/hardware-accel.html#controlling).
+
+# Android manifest
+You'll need to have the appropriate permissions in manifest for tile cache to work properly:
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 # App Initialization
 
@@ -40,9 +48,9 @@ To avoid redrawing all the tiles all the time, we need to set up a tile cache. A
 
 Now we need to set up the process of displaying a map. A map can have several layers, stacked on top of each other. A layer can be a map or some visual elements, such as markers. Here we only show a map based on a mapsforge map file. For this we need a TileRendererLayer. A tileRendererLayer needs a tileCache to hold the generated map tiles, a mapfile from which the tiles are generated and rendertheme that defines the appearance of the map:
 
-    this.tileRendererLayer = new TileRendererLayer(tileCache,
+    MapDataStore mapDataStore = new MapFile(getMapFile());
+    this.tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
     				this.mapView.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
-    tileRendererLayer.setMapFile(getMapFile());
     tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 
 On its own a tileRendererLayer does not know where to display the map, so we need to associate it with our mapView:
@@ -75,7 +83,7 @@ Whenever your activity changes, some cleanup operations have to be performed les
     	this.tileCache.destroy();
     	this.mapView.getModel().mapViewPosition.destroy();
     	this.mapView.destroy();
-    	AndroidResourceBitmap.clearResourceBitmaps();
+    	AndroidGraphicFactory.clearResourceMemoryCache();
     }
 
 ## All in one
@@ -88,11 +96,12 @@ Here comes the whole as a single file:
     
     import org.mapsforge.core.model.LatLong;
     import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-    import org.mapsforge.map.android.graphics.AndroidResourceBitmap;
     import org.mapsforge.map.android.util.AndroidUtil;
     import org.mapsforge.map.android.view.MapView;
     import org.mapsforge.map.layer.cache.TileCache;
     import org.mapsforge.map.layer.renderer.TileRendererLayer;
+    import org.mapsforge.map.reader.MapDataStore;
+    import org.mapsforge.map.reader.MapFile;
     import org.mapsforge.map.rendertheme.InternalRenderTheme;
     
     import android.app.Activity;
@@ -137,9 +146,9 @@ Here comes the whole as a single file:
     		this.mapView.getModel().mapViewPosition.setZoomLevel((byte) 12);
     
     		// tile renderer layer using internal render theme
-    		this.tileRendererLayer = new TileRendererLayer(tileCache,
+    		MapDataStore mapDataStore = new MapFile(getMapFile());
+    		this.tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
     				this.mapView.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
-    		tileRendererLayer.setMapFile(getMapFile());
     		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
     		
     		// only once a layer is associated with a mapView the rendering starts
@@ -160,7 +169,7 @@ Here comes the whole as a single file:
     		this.tileCache.destroy();
     		this.mapView.getModel().mapViewPosition.destroy();
     		this.mapView.destroy();
-    		AndroidResourceBitmap.clearResourceBitmaps();
+    		AndroidGraphicFactory.clearResourceMemoryCache();
     	}
     	
     	private File getMapFile() {
