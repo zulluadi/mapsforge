@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +32,11 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PoiWayBundle;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
@@ -191,7 +198,6 @@ public class MapFile implements MapDataStore {
 	private final ReadBuffer readBuffer;
 	private final long timestamp;
 
-
 	/* Only for testing, an empty file. */
 	public static final MapFile TEST_MAP_FILE = new MapFile();
 
@@ -206,6 +212,12 @@ public class MapFile implements MapDataStore {
 	 */
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
+
+	/**
+	 * Preferred language to be set before reading the map data.
+	 * Reader uses it while retrieving the localized text from the feature multilingual string.
+	 */
+	public static String preferredLanguage = null;
 
 	/**
 	 * Opens the given map file, reads its header data and validates them.
@@ -362,6 +374,43 @@ public class MapFile implements MapDataStore {
 		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 
+	/**
+	 * Extract substring of preferred language from multilingual string.<br/>
+	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
+	 * <p>
+	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
+	 */
+	public static String extractLocalized(String s) {
+		if (s == null || s.isEmpty()) {
+			return null;
+		}
+
+		String[] langNames = s.split("\r");
+		if (preferredLanguage == null || preferredLanguage.isEmpty()) {
+			return langNames[0];
+		}
+
+		String fallback = null;
+		for (int i = 1; i < langNames.length; i++) {
+			String[] langName = langNames[i].split("\b");
+			if (langName.length != 2) {
+				continue;
+			}
+
+			// Perfect match
+			if (langName[0].equalsIgnoreCase(preferredLanguage)) {
+				return langName[1];
+			}
+
+			// Fall back to base, e.g. zh-min-lan -> zh
+			if (fallback == null && !langName[0].contains("-") && (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+					&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
+				fallback = langName[1];
+			}
+		}
+		return (fallback != null) ? fallback : langNames[0];
+	}
+
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude offset (VBE-S)
 		double wayNodeLatitude = tileLatitude
@@ -421,7 +470,7 @@ public class MapFile implements MapDataStore {
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                  BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -469,13 +518,12 @@ public class MapFile implements MapDataStore {
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                    BoundingBox boundingBox)
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter, BoundingBox boundingBox)
 			throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
 
-		MapReadResultBuilder mapReadResultBuilder = new MapReadResultBuilder();
+		MapReadResult mapFileReadResult = new MapReadResult();
 
 		// read and process all blocks from top to bottom and from left to right
 		for (long row = queryParameters.fromBlockY; row <= queryParameters.toBlockY; ++row) {
@@ -553,7 +601,7 @@ public class MapFile implements MapDataStore {
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox, tileLatitude, tileLongitude);
 					if (poiWayBundle != null) {
-						mapReadResultBuilder.add(poiWayBundle);
+						mapFileReadResult.add(poiWayBundle);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -563,10 +611,10 @@ public class MapFile implements MapDataStore {
 
 		// the query is finished, was the water flag set for all blocks?
 		if (queryIsWater && queryReadWaterInfo) {
-			mapReadResultBuilder.isWater = true;
+			mapFileReadResult.isWater = true;
 		}
 
-		return mapReadResultBuilder.build();
+		return mapFileReadResult;
 	}
 
 	/**
@@ -636,7 +684,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the POI has a name
 			if (featureName) {
-				tags.add(new Tag(TAG_KEY_NAME, this.readBuffer.readUTF8EncodedString()));
+				tags.add(new Tag(TAG_KEY_NAME, extractLocalized(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the POI has a house number
@@ -699,12 +747,11 @@ public class MapFile implements MapDataStore {
 	}
 
 	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
-	                              BoundingBox boundingBox, boolean filterRequired,
-	                              double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, boolean filterRequired, double tileLatitude, double tileLongitude) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
-		BoundingBox wayFilterBbox = boundingBox.extend(wayFilterDistance);
+		BoundingBox wayFilterBbox = boundingBox.extendMeters(wayFilterDistance);
 
 		for (int elementCounter = numberOfWays; elementCounter != 0; --elementCounter) {
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
@@ -769,7 +816,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the way has a name
 			if (featureName) {
-				tags.add(new Tag(TAG_KEY_NAME, this.readBuffer.readUTF8EncodedString()));
+				tags.add(new Tag(TAG_KEY_NAME, extractLocalized(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the way has a house number
@@ -845,7 +892,6 @@ public class MapFile implements MapDataStore {
 		return zoomTable;
 	}
 
-
 	private MapFile() {
 		// only to create a dummy empty file.
 		databaseIndexCache = null;
@@ -856,4 +902,3 @@ public class MapFile implements MapDataStore {
 		timestamp = System.currentTimeMillis();
 	}
 }
-

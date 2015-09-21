@@ -116,13 +116,6 @@ public class Polygon extends Layer {
 	}
 
 	/**
-	 * @return the {@code GraphicFactory}.
-	 */
-	public GraphicFactory getGraphicFactory() {
-		return graphicFactory;
-	}
-
-	/**
 	 * @return a thread-safe list of LatLongs in this polygon.
 	 */
 	public List<LatLong> getLatLongs() {

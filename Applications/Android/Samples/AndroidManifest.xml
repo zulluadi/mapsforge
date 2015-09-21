@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.mapsforge.applications.android.samples"
     android:installLocation="auto"
-    android:versionCode="50"
+    android:versionCode="52"
     android:versionName="rotation-SNAPSHOT" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="10"
         android:targetSdkVersion="22" />
 
     <application
@@ -132,6 +132,10 @@
             android:name=".MultiMapLowResWorld"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Low res world background" />
+        <activity
+            android:name=".SimpleDataStoreMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Simple User Map Store" />
         <activity
             android:name=".StackedLayersMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"

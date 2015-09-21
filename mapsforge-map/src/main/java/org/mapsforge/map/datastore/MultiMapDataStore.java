@@ -13,8 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.mapsforge.map.reader;
+package org.mapsforge.map.datastore;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
@@ -52,8 +51,15 @@ public class MultiMapDataStore implements MapDataStore {
 
 	public MultiMapDataStore(DataPolicy dataPolicy) {
 		this.dataPolicy = dataPolicy;
-		this.mapDatabases = new ArrayList<MapDataStore>();
+		this.mapDatabases = new ArrayList<>();
 	}
+
+	/**
+	 * adds another mapDataStore
+	 * @param mapDataStore the mapDataStore to add
+	 * @param useStartZoomLevel if true, use the start zoom level of this mapDataStore as the start zoom level
+	 * @param useStartPosition if true, use the start position of this mapDataStore as the start position
+	 */
 
 	public void addMapDataStore(MapDataStore mapDataStore, boolean useStartZoomLevel, boolean useStartPosition) {
 		if (this.mapDatabases.contains(mapDataStore)) {
@@ -69,7 +75,7 @@ public class MultiMapDataStore implements MapDataStore {
 		if (null == this.boundingBox) {
 			this.boundingBox = mapDataStore.boundingBox();
 		} else {
-			this.boundingBox = this.boundingBox.extend(mapDataStore.boundingBox());
+			this.boundingBox = this.boundingBox.extendBoundingBox(mapDataStore.boundingBox());
 		}
 	}
 
@@ -170,7 +176,7 @@ public class MultiMapDataStore implements MapDataStore {
 	}
 
 	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
-		MapReadResultBuilder mapReadResultBuilder = new MapReadResultBuilder();
+		MapReadResult mapReadResult = new MapReadResult();
 		boolean first = true;
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {
@@ -178,37 +184,39 @@ public class MultiMapDataStore implements MapDataStore {
 				if (result == null) {
 					continue;
 				}
-				mapReadResultBuilder.isWater &= result.isWater;
+				boolean isWater = mapReadResult.isWater & result.isWater;
+				mapReadResult.isWater = isWater;
+
 
 				if (first) {
-					mapReadResultBuilder.ways.addAll(result.ways);
+					mapReadResult.ways.addAll(result.ways);
 				} else {
 					if (deduplicate) {
 						for (Way way : result.ways) {
-							if (!mapReadResultBuilder.ways.contains(way)) {
-								mapReadResultBuilder.ways.add(way);
+							if (!mapReadResult.ways.contains(way)) {
+								mapReadResult.ways.add(way);
 							}
 						}
 					} else {
-						mapReadResultBuilder.ways.addAll(result.ways);
+						mapReadResult.ways.addAll(result.ways);
 					}
 				}
 				if (first) {
-					mapReadResultBuilder.pointOfInterests.addAll(result.pointOfInterests);
+					mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
 				} else {
 					if (deduplicate) {
 						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapReadResultBuilder.pointOfInterests.contains(poi)) {
-								mapReadResultBuilder.pointOfInterests.add(poi);
+							if (!mapReadResult.pointOfInterests.contains(poi)) {
+								mapReadResult.pointOfInterests.add(poi);
 							}
 						}
 					} else {
-						mapReadResultBuilder.pointOfInterests.addAll(result.pointOfInterests);
+						mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
 					}
 				}
 				first = false;
 			}
 		}
-		return new MapReadResult(mapReadResultBuilder);
+		return mapReadResult;
 	}
 }

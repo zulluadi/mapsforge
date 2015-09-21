@@ -19,6 +19,7 @@ package org.mapsforge.map.android.view;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.ScaleListener;
@@ -27,7 +28,11 @@ import org.mapsforge.map.android.input.TouchGestureDetector;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.TileLayer;
+import org.mapsforge.map.layer.labels.LabelStore;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
@@ -93,6 +98,14 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
+	}
+
+	/**
+	 * Clear map view.
+	 */
+	@Override
 	public void destroy() {
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
@@ -101,6 +114,29 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 			this.mapScaleBar.destroy();
 		}
 		this.getModel().mapViewPosition.destroy();
+	}
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	@Override
+	public void destroyAll() {
+		for (Layer layer : this.layerManager.getLayers()) {
+			this.layerManager.getLayers().remove(layer);
+			layer.onDestroy();
+			if (layer instanceof TileLayer) {
+				((TileLayer<?>) layer).getTileCache().destroy();
+			}
+			if (layer instanceof TileRendererLayer) {
+				LabelStore labelStore = ((TileRendererLayer) layer).getLabelStore();
+				if (labelStore != null) {
+					labelStore.clear();
+				}
+			}
+		}
+		destroy();
+		AndroidGraphicFactory.clearResourceMemoryCache();
 	}
 
 	@Override
@@ -131,21 +167,13 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	public MapScaleBar getMapScaleBar() {
-		return this.mapScaleBar;
-	}
-
-	@Override
 	public Rotation getMapRotation() {
 		return this.getModel().mapViewPosition.getRotation();
 	}
 
 	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		if (this.mapScaleBar != null) {
-			this.mapScaleBar.destroy();
-		}
-		this.mapScaleBar = mapScaleBar;
+	public MapScaleBar getMapScaleBar() {
+		return this.mapScaleBar;
 	}
 
 	/**
@@ -158,6 +186,44 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	@Override
 	public Model getModel() {
 		return this.model;
+	}
+
+	@Override
+	protected void onDraw(Canvas androidCanvas) {
+		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
+		this.frameBuffer.draw(graphicContext, getMapRotation());
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.draw(graphicContext);
+		}
+		this.fpsCounter.draw(graphicContext);
+		graphicContext.destroy();
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		this.mapZoomControls.layout(changed, left, top, right, bottom);
+	}
+
+	@Override
+	protected final void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// find out how big the zoom controls should be
+		this.mapZoomControls.measure(
+				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
+				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST));
+
+		// make sure that MapView is big enough to display the zoom controls
+		setMeasuredDimension(Math.max(MeasureSpec.getSize(widthMeasureSpec), this.mapZoomControls.getMeasuredWidth()),
+				Math.max(MeasureSpec.getSize(heightMeasureSpec), this.mapZoomControls.getMeasuredHeight()));
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	}
+
+	@Override
+	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+		if (getMapRotation() != Rotation.NULL_ROTATION) {
+			width = (int) Math.hypot(width, height);
+			height = width;
+		}
+		this.model.mapViewDimension.setDimension(new Dimension(width, height));
 	}
 
 	@Override
@@ -201,46 +267,25 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.mapZoomControls.setShowMapZoomControls(showZoomControls);
 	}
 
+	@Override
+	public void setCenter(LatLong center) {
+		this.model.mapViewPosition.setCenter(center);
+	}
+
 	public void setGestureDetector(GestureDetector gestureDetector) {
 		this.gestureDetector = gestureDetector;
 	}
 
 	@Override
-	protected void onDraw(Canvas androidCanvas) {
-		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
-		this.frameBuffer.draw(graphicContext, getMapRotation());
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
 		if (this.mapScaleBar != null) {
-			this.mapScaleBar.draw(graphicContext);
+			this.mapScaleBar.destroy();
 		}
-		this.fpsCounter.draw(graphicContext);
-		graphicContext.destroy();
+		this.mapScaleBar = mapScaleBar;
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		this.mapZoomControls.layout(changed, left, top, right, bottom);
+	public void setZoomLevel(byte zoomLevel) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
 	}
-
-	@Override
-	protected final void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// find out how big the zoom controls should be
-		this.mapZoomControls.measure(
-				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST));
-
-		// make sure that MapView is big enough to display the zoom controls
-		setMeasuredDimension(Math.max(MeasureSpec.getSize(widthMeasureSpec), this.mapZoomControls.getMeasuredWidth()),
-				Math.max(MeasureSpec.getSize(heightMeasureSpec), this.mapZoomControls.getMeasuredHeight()));
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-	}
-
-	@Override
-	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-		if (getMapRotation() != Rotation.NULL_ROTATION) {
-			width = (int) Math.hypot(width, height);
-			height = width;
-		}
-		this.model.mapViewDimension.setDimension(new Dimension(width, height));
-	}
-
 }

@@ -105,13 +105,6 @@ public class Polyline extends Layer {
 	}
 
 	/**
-	 * @return the {@code GraphicFactory}.
-	 */
-	public GraphicFactory getGraphicFactory() {
-		return graphicFactory;
-	}
-
-	/**
 	 * @return a thread-safe list of LatLongs in this polyline.
 	 */
 	public List<LatLong> getLatLongs() {

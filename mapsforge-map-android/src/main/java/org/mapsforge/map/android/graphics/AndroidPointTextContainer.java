@@ -15,21 +15,20 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
+
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 
 public class AndroidPointTextContainer extends PointTextContainer {
 
@@ -121,6 +120,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			case RIGHT:
 				boundary = new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
 				break;
+			default:
+				break;
 		}
 	}
 
@@ -168,6 +169,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				case BELOW_LEFT:
 				case BELOW_RIGHT:
 					textOffset = textHeight;
+					break;
+				default:
 					break;
 			}
 

@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;

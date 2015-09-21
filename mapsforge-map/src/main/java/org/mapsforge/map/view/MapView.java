@@ -17,25 +17,33 @@ package org.mapsforge.map.view;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
+
+	void addLayer(Layer layer);
+
+	/**
+	 * Clear map view.
+	 */
 	void destroy();
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	void destroyAll();
 
 	BoundingBox getBoundingBox();
 
 	Dimension getDimension();
 
 	FpsCounter getFpsCounter();
-
-	MapScaleBar getMapScaleBar();
-
-	Rotation getMapRotation();
-
-	void setMapScaleBar(MapScaleBar mapScaleBar);
 
 	/**
 	 * @return the FrameBuffer used in this MapView.
@@ -45,6 +53,10 @@ public interface MapView {
 	int getHeight();
 
 	LayerManager getLayerManager();
+
+	Rotation getMapRotation();
+
+	MapScaleBar getMapScaleBar();
 
 	Model getModel();
 
@@ -57,4 +69,9 @@ public interface MapView {
 
 	void rotate(final Rotation rotation);
 
+	void setCenter(LatLong center);
+
+	void setMapScaleBar(MapScaleBar mapScaleBar);
+
+	void setZoomLevel(byte zoomLevel);
 }

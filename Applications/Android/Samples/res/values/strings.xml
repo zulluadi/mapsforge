@@ -15,7 +15,9 @@
 	<string name="rotate_cw_button">CW</string>
 	<string name="rotate_reset_button">Reset</string>
 	<string name="rotate_ccw_button">CCW</string>
-
+	<string name="zoomin_button">+</string>
+	<string name="zoomout_button">-</string>
+		
 	<string name="latitude">Latitude</string>
 	<string name="longitude">Longitude</string>
 	<string name="zoomlevel">Zoom Level</string>

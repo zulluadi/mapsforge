@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.util.MapViewProjection;
 
@@ -172,9 +171,8 @@ public class TouchEventHandler {
 		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
 
-
-		Rotation rotation = this.mapView.getMapRotation();
-		Point pointRotated = rotation.reverseRotation().rotate(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
+		// Rotation rotation = this.mapView.getMapRotation();
+		// Point pointRotated = rotation.reverseRotation().rotate(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
 
 		double moveX = motionEvent.getX(pointerIndex) - this.lastPosition.x;
 		double moveY = motionEvent.getY(pointerIndex) - this.lastPosition.y;

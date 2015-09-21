@@ -23,11 +23,16 @@ import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.TileLayer;
+import org.mapsforge.map.layer.labels.LabelStore;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
@@ -37,6 +42,7 @@ import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
+
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +52,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final LayerManager layerManager;
 	private MapScaleBar mapScaleBar;
 	private final Model model;
-
 
 	public MapView() {
 		super();
@@ -68,6 +73,14 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
+	}
+
+	/**
+	 * Clear map view.
+	 */
+	@Override
 	public void destroy() {
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
@@ -75,6 +88,30 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
 		}
+		this.getModel().mapViewPosition.destroy();
+	}
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	@Override
+	public void destroyAll() {
+		for (Layer layer : this.layerManager.getLayers()) {
+			this.layerManager.getLayers().remove(layer);
+			layer.onDestroy();
+			if (layer instanceof TileLayer) {
+				((TileLayer<?>) layer).getTileCache().destroy();
+			}
+			if (layer instanceof TileRendererLayer) {
+				LabelStore labelStore = ((TileRendererLayer) layer).getLabelStore();
+				if (labelStore != null) {
+					labelStore.clear();
+				}
+			}
+		}
+		destroy();
+		AwtGraphicFactory.clearResourceMemoryCache();
 	}
 
 	@Override
@@ -105,19 +142,13 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	public MapScaleBar getMapScaleBar() {
-		return this.mapScaleBar;
-	}
-
-	@Override
 	public Rotation getMapRotation() {
 		return this.getModel().mapViewPosition.getRotation();
 	}
 
 	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		this.mapScaleBar.destroy();
-		this.mapScaleBar=mapScaleBar;
+	public MapScaleBar getMapScaleBar() {
+		return this.mapScaleBar;
 	}
 
 	@Override
@@ -144,4 +175,19 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.getModel().mapViewPosition.setRotation(rotation);
 	}
 
+	@Override
+	public void setCenter(LatLong center) {
+		this.model.mapViewPosition.setCenter(center);
+	}
+
+	@Override
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		this.mapScaleBar.destroy();
+		this.mapScaleBar=mapScaleBar;
+	}
+
+	@Override
+	public void setZoomLevel(byte zoomLevel) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
+	}
 }

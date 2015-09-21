@@ -17,6 +17,8 @@ package org.mapsforge.map.controller;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.core.model.Rotation;
@@ -29,7 +31,17 @@ public class DummyMapView implements MapView {
 	public int repaintCounter;
 
 	@Override
+	public void addLayer(Layer layer) {
+		// no-op
+	}
+
+	@Override
 	public void destroy() {
+		// do nothing
+	}
+
+	@Override
+	public void destroyAll() {
 		// do nothing
 	}
 
@@ -64,13 +76,18 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
-	public Model getModel() {
+	public Rotation getMapRotation() {
+		return Rotation.NULL_ROTATION;
+	}
+
+	@Override
+	public MapScaleBar getMapScaleBar() {
 		return null;
 	}
 
 	@Override
-	public Rotation getMapRotation() {
-		return Rotation.NULL_ROTATION;
+	public Model getModel() {
+		return null;
 	}
 
 	@Override
@@ -84,16 +101,21 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
-	public MapScaleBar getMapScaleBar() {
-		return null;
-	}
-
-	@Override
 	public void rotate(final Rotation rotation) {
 	}
 
 	@Override
+	public void setCenter(LatLong center) {
+		// no-op
+	}
+
+	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		// no-op
+	}
+
+	@Override
+	public void setZoomLevel(byte zoomLevel) {
 		// no-op
 	}
 }

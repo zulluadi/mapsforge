@@ -78,12 +78,6 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	}
 
 	@Override
-	protected void destroyMapViews() {
-		super.destroyMapViews();
-		this.observer.removeObserver();
-	}
-
-	@Override
 	protected int getLayoutId() {
 		// provides a layout with two mapViews
 		return R.layout.dualoverviewmapviewer;
@@ -93,6 +87,7 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	 * @return the screen ratio that the mapview takes up (for cache
 	 *         calculation)
 	 */
+	@Override
 	protected float getScreenRatio() {
 		return 1f;
 	}
@@ -101,7 +96,14 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	 * @return the screen ratio that the mapview takes up (for cache
 	 *         calculation)
 	 */
+	@Override
 	protected float getScreenRatio2() {
 		return 0.1f;
+	}
+
+	@Override
+	protected void onDestroy() {
+		this.observer.removeObserver();
+		super.onDestroy();
 	}
 }

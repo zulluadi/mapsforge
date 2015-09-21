@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,27 +13,26 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.reader;
+package org.mapsforge.map;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Assert;
 
-class MapReadResultBuilder {
-	boolean isWater;
-	final List<PointOfInterest> pointOfInterests;
-	final List<Way> ways;
+public final class TestUtils {
+	public static void equalsTest(Object object1, Object object2) {
+		Assert.assertEquals(object1, object1);
+		Assert.assertEquals(object2, object2);
 
-	MapReadResultBuilder() {
-		this.pointOfInterests = new ArrayList<PointOfInterest>();
-		this.ways = new ArrayList<Way>();
+		Assert.assertEquals(object1.hashCode(), object2.hashCode());
+		Assert.assertEquals(object1, object2);
+		Assert.assertEquals(object2, object1);
 	}
 
-	void add(PoiWayBundle poiWayBundle) {
-		this.pointOfInterests.addAll(poiWayBundle.pois);
-		this.ways.addAll(poiWayBundle.ways);
+	public static void notEqualsTest(Object object1, Object object2) {
+		Assert.assertNotEquals(object1, object2);
+		Assert.assertNotEquals(object2, object1);
 	}
 
-	MapReadResult build() {
-		return new MapReadResult(this);
+	private TestUtils() {
+		throw new IllegalArgumentException();
 	}
 }
