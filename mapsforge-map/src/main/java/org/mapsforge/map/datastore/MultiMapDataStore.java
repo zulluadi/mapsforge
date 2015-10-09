@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -35,7 +35,7 @@ import java.util.List;
  * is the most expensive operation and often it is actually faster to double paint objects as otherwise
  * all objects have to be compared with all others.
  */
-public class MultiMapDataStore implements MapDataStore {
+public class MultiMapDataStore extends MapDataStore {
 
 	public enum DataPolicy {
 		RETURN_FIRST, // return the first set of data
@@ -141,40 +141,6 @@ public class MultiMapDataStore implements MapDataStore {
 		throw new IllegalStateException("Invalid data policy for multi map database");
 	}
 
-	@Override
-	public LatLong startPosition() {
-		if (null != this.startPosition) {
-			return this.startPosition;
-		}
-		if (null != this.boundingBox) {
-			return this.boundingBox.getCenterPoint();
-		}
-		return null;
-	}
-
-	public void setStartPosition(LatLong startPosition) {
-		this.startPosition = startPosition;
-	}
-
-	@Override
-	public Byte startZoomLevel() {
-		return startZoomLevel;
-	}
-
-	public void setStartZoomLevel(byte startZoomLevel) {
-		this.startZoomLevel = startZoomLevel;
-	}
-
-	@Override
-	public boolean supportsTile(Tile tile) {
-		for (MapDataStore mdb : mapDatabases) {
-			if (mdb.supportsTile(tile)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
 		MapReadResult mapReadResult = new MapReadResult();
 		boolean first = true;
@@ -218,5 +184,39 @@ public class MultiMapDataStore implements MapDataStore {
 			}
 		}
 		return mapReadResult;
+	}
+
+	public void setStartPosition(LatLong startPosition) {
+		this.startPosition = startPosition;
+	}
+
+	public void setStartZoomLevel(byte startZoomLevel) {
+		this.startZoomLevel = startZoomLevel;
+	}
+
+	@Override
+	public LatLong startPosition() {
+		if (null != this.startPosition) {
+			return this.startPosition;
+		}
+		if (null != this.boundingBox) {
+			return this.boundingBox.getCenterPoint();
+		}
+		return null;
+	}
+
+	@Override
+	public Byte startZoomLevel() {
+		return startZoomLevel;
+	}
+
+	@Override
+	public boolean supportsTile(Tile tile) {
+		for (MapDataStore mdb : mapDatabases) {
+			if (mdb.supportsTile(tile)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

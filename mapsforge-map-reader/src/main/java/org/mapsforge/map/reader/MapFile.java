@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
  * Copyright 2015 lincomatic
  *
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +49,7 @@ import org.mapsforge.map.reader.header.SubFileParameter;
  *
  * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
-public class MapFile implements MapDataStore {
+public class MapFile extends MapDataStore {
 
 	/**
 	 * Bitmask to extract the block offset from an index entry.
@@ -191,16 +190,8 @@ public class MapFile implements MapDataStore {
 	 */
 	private static final int WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
-	private final IndexCache databaseIndexCache;
-	private final long fileSize;
-	private final RandomAccessFile inputFile;
-	private final MapFileHeader mapFileHeader;
-	private final ReadBuffer readBuffer;
-	private final long timestamp;
-
 	/* Only for testing, an empty file. */
 	public static final MapFile TEST_MAP_FILE = new MapFile();
-
 	/**
 	 * Way filtering reduces the number of ways returned to only those that are
 	 * relevant for the tile requested, leading to performance gains, but can
@@ -212,20 +203,44 @@ public class MapFile implements MapDataStore {
 	 */
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
+	private final IndexCache databaseIndexCache;
+	private final long fileSize;
+	private final RandomAccessFile inputFile;
+
+	private final MapFileHeader mapFileHeader;
+
+	private final ReadBuffer readBuffer;
+	private final long timestamp;
+
+	private MapFile() {
+		// only to create a dummy empty file.
+		databaseIndexCache = null;
+		fileSize = 0;
+		inputFile = null;
+		mapFileHeader = null;
+		readBuffer = null;
+		timestamp = System.currentTimeMillis();
+	}
 
 	/**
-	 * Preferred language to be set before reading the map data.
-	 * Reader uses it while retrieving the localized text from the feature multilingual string.
-	 */
-	public static String preferredLanguage = null;
-
-	/**
-	 * Opens the given map file, reads its header data and validates them.
+	 * Opens the given map file, reads its header data and validates them. Uses default language.
 	 *
 	 * @param mapFile the map file.
 	 * @throws MapFileException if the given map file is null or invalid.
 	 */
 	public MapFile(File mapFile) {
+		this(mapFile, null);
+	}
+
+	/**
+	 * Opens the given map file, reads its header data and validates them.
+	 *
+	 * @param mapFile the map file.
+	 * @param language the language to use (may be null).
+	 * @throws MapFileException if the given map file is null or invalid.
+	 */
+	public MapFile(File mapFile, String language) {
+		super(language);
 		if (mapFile == null) {
 			throw new MapFileException("mapFile must not be null");
 		}
@@ -261,11 +276,12 @@ public class MapFile implements MapDataStore {
 	 * Opens the given map file, reads its header data and validates them.
 	 *
 	 * @param mapFileName the path of the map file.
+	 * @param language the language to use (may be null).
 	 * @throws MapFileException if the given map file is null or invalid or IOException if the file
 	 * cannot be opened.
 	 */
-	public MapFile(String mapFileName) {
-		this(new File(mapFileName));
+	public MapFile(String mapFileName, String language) {
+		this(new File(mapFileName), language);
 	}
 
 	@Override
@@ -288,127 +304,6 @@ public class MapFile implements MapDataStore {
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * @return the metadata for the current map file.
-	 * @throws IllegalStateException
-	 *             if no map is currently opened.
-	 */
-	public MapFileInfo getMapFileInfo() {
-		return this.mapFileHeader.getMapFileInfo();
-	}
-
-	/**
-	 * Returns the creation timestamp of the map file.
-	 * @param tile not used, as all tiles will shared the same creation date.
-	 * @return the creation timestamp inside the map file.
-	 */
-	@Override
-	public long getDataTimestamp(Tile tile) {
-		return this.timestamp;
-	}
-
-	/**
-	 * Reads all map data for the area covered by the given tile at the tile zoom level.
-	 *
-	 * @param tile
-	 *            defines area and zoom level of read map data.
-	 * @return the read map data.
-	 */
-	@Override
-	public synchronized MapReadResult readMapData(Tile tile) {
-		try {
-			QueryParameters queryParameters = new QueryParameters();
-			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
-
-			// get and check the sub-file for the query zoom level
-			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
-			if (subFileParameter == null) {
-				LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
-				return null;
-			}
-
-			queryParameters.calculateBaseTiles(tile, subFileParameter);
-			queryParameters.calculateBlocks(subFileParameter);
-
-			// we enlarge the bounding box for the tile slightly in order to retain any data that
-			// lies right on the border, some of this data needs to be drawn as the graphics will
-			// overlap onto this tile.
-			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return null;
-		}
-	}
-
-	/**
-	 * Restricts returns of data to zoom level range specified. This can be used to restrict
-	 * the use of this map data base when used in MultiMapDatabase settings.
-	 * @param minZoom minimum zoom level supported
-	 * @param maxZoom maximum zoom level supported
-	 */
-	public void restrictToZoomRange(byte minZoom, byte maxZoom) {
-		this.getMapFileInfo().zoomLevelMax = maxZoom;
-		this.getMapFileInfo().zoomLevelMin = minZoom;
-	}
-
-	@Override
-	public LatLong startPosition() {
-		if (null != getMapFileInfo().startPosition) {
-			return getMapFileInfo().startPosition;
-		}
-		return getMapFileInfo().boundingBox.getCenterPoint();
-	}
-
-	@Override
-	public Byte startZoomLevel() {
-		if (null != getMapFileInfo().startZoomLevel) {
-			return getMapFileInfo().startZoomLevel;
-		}
-		return DEFAULT_START_ZOOM_LEVEL;
-	}
-
-	@Override
-	public boolean supportsTile(Tile tile) {
-		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
-	}
-
-	/**
-	 * Extract substring of preferred language from multilingual string.<br/>
-	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
-	 * <p>
-	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
-	 */
-	public static String extractLocalized(String s) {
-		if (s == null || s.isEmpty()) {
-			return null;
-		}
-
-		String[] langNames = s.split("\r");
-		if (preferredLanguage == null || preferredLanguage.isEmpty()) {
-			return langNames[0];
-		}
-
-		String fallback = null;
-		for (int i = 1; i < langNames.length; i++) {
-			String[] langName = langNames[i].split("\b");
-			if (langName.length != 2) {
-				continue;
-			}
-
-			// Perfect match
-			if (langName[0].equalsIgnoreCase(preferredLanguage)) {
-				return langName[1];
-			}
-
-			// Fall back to base, e.g. zh-min-lan -> zh
-			if (fallback == null && !langName[0].contains("-") && (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
-					&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
-				fallback = langName[1];
-			}
-		}
-		return (fallback != null) ? fallback : langNames[0];
 	}
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
@@ -467,6 +362,36 @@ public class MapFile implements MapDataStore {
 
 			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 		}
+	}
+
+	/**
+	 * Returns the creation timestamp of the map file.
+	 * @param tile not used, as all tiles will shared the same creation date.
+	 * @return the creation timestamp inside the map file.
+	 */
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		return this.timestamp;
+	}
+
+	/**
+	 * @return the metadata for the current map file.
+	 * @throws IllegalStateException
+	 *             if no map is currently opened.
+	 */
+	public MapFileInfo getMapFileInfo() {
+		return this.mapFileHeader.getMapFileInfo();
+	}
+
+	/**
+	 * @return the map file supported languages (may be null).
+	 */
+	public String[] getMapLanguages() {
+		String languagesPreference = getMapFileInfo().languagesPreference;
+		if (languagesPreference != null && !languagesPreference.trim().isEmpty()) {
+			return languagesPreference.split(",");
+		}
+		return null;
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
@@ -851,6 +776,39 @@ public class MapFile implements MapDataStore {
 		return ways;
 	}
 
+	/**
+	 * Reads all map data for the area covered by the given tile at the tile zoom level.
+	 *
+	 * @param tile
+	 *            defines area and zoom level of read map data.
+	 * @return the read map data.
+	 */
+	@Override
+	public synchronized MapReadResult readMapData(Tile tile) {
+		try {
+			QueryParameters queryParameters = new QueryParameters();
+			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
+
+			// get and check the sub-file for the query zoom level
+			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
+			if (subFileParameter == null) {
+				LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+				return null;
+			}
+
+			queryParameters.calculateBaseTiles(tile, subFileParameter);
+			queryParameters.calculateBlocks(subFileParameter);
+
+			// we enlarge the bounding box for the tile slightly in order to retain any data that
+			// lies right on the border, some of this data needs to be drawn as the graphics will
+			// overlap onto this tile.
+			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			return null;
+		}
+	}
+
 	private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition) {
 		if (featureLabelPosition) {
 			// get the label position latitude offset (VBE-S)
@@ -892,13 +850,35 @@ public class MapFile implements MapDataStore {
 		return zoomTable;
 	}
 
-	private MapFile() {
-		// only to create a dummy empty file.
-		databaseIndexCache = null;
-		fileSize = 0;
-		inputFile = null;
-		mapFileHeader = null;
-		readBuffer = null;
-		timestamp = System.currentTimeMillis();
+	/**
+	 * Restricts returns of data to zoom level range specified. This can be used to restrict
+	 * the use of this map data base when used in MultiMapDatabase settings.
+	 * @param minZoom minimum zoom level supported
+	 * @param maxZoom maximum zoom level supported
+	 */
+	public void restrictToZoomRange(byte minZoom, byte maxZoom) {
+		this.getMapFileInfo().zoomLevelMax = maxZoom;
+		this.getMapFileInfo().zoomLevelMin = minZoom;
+	}
+
+	@Override
+	public LatLong startPosition() {
+		if (null != getMapFileInfo().startPosition) {
+			return getMapFileInfo().startPosition;
+		}
+		return getMapFileInfo().boundingBox.getCenterPoint();
+	}
+
+	@Override
+	public Byte startZoomLevel() {
+		if (null != getMapFileInfo().startZoomLevel) {
+			return getMapFileInfo().startZoomLevel;
+		}
+		return DEFAULT_START_ZOOM_LEVEL;
+	}
+
+	@Override
+	public boolean supportsTile(Tile tile) {
+		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 }
