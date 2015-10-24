@@ -7,7 +7,11 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="18" />
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -38,6 +42,10 @@
             android:name=".ChangingBitmaps"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Bitmaps automatically change" />
+        <activity
+            android:name=".ClusterMapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Marker Clustering" />
         <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"

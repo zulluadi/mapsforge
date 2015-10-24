@@ -8,4 +8,5 @@ android:
   components:
     - build-tools-23.0.1
     - android-23
-script: gradle build
+    - extra-android-m2repository
+script: ./gradlew clean build
