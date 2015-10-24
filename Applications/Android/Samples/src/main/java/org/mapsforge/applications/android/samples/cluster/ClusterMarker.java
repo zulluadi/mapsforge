@@ -25,6 +25,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
@@ -79,8 +80,8 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
     }
 
     @Override
-    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel
-            , org.mapsforge.core.graphics.Canvas canvas, Point topLeftPoint) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel,
+                                  org.mapsforge.core.graphics.Canvas canvas, Point topLeftPoint, final Rotation rotation) {
         Boolean isSelected = isSelected();
         if (cluster.getClusterManager() == null ||
                 cluster.getClusterManager().isClustering ||
@@ -121,7 +122,7 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
         }
         // Draw bitmap
         canvas.drawBitmap(cluster.getClusterManager().markerIconBmps
-                .get(markerType).getBitmap(isSelected), (int) left, (int) top);
+                .get(markerType).getBitmap(isSelected), left, top);
 
         // Draw Text
         if (markerType == 0) {
@@ -131,7 +132,7 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
                             .get(markerType).getPaint());
             canvas.drawBitmap(bubble,
                     (int) (left + halfBitmapWidth - bubble.getWidth() / 2),
-                    (int) (top - bubble.getHeight()));
+                    (top - bubble.getHeight()));
         } else {
             int x = (int) (left + halfBitmapWidth);
             int y = (int) (top + halfBitmapHeight
