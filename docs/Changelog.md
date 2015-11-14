@@ -2,7 +2,14 @@
 
 <wiki:toc />
 
-## New since 0.5.2
+## Version 0.6.X
+
+**Version 0.6.0-rc2 (2015-11-13)**
+
+- Minor improvements and bug fixes
+
+
+**Version 0.6.0-rc1 (2015-11-01)**
 
 - Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)
 - Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
@@ -16,9 +23,12 @@
 - Customizable zoom controls [#700](https://github.com/mapsforge/mapsforge/issues/700)
 - Android View overlay [#680](https://github.com/mapsforge/mapsforge/issues/680)
 - Simplification of MapView API [#662](https://github.com/mapsforge/mapsforge/issues/662)
-- XSD repositioning, online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
+- AWT library reorganization [#714](https://github.com/mapsforge/mapsforge/issues/714)
+- XSD repositioning for online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
+- Android 6 / SDK 23 / Runtime permission support [#704](https://github.com/mapsforge/mapsforge/issues/704)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.3)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.0)
+
 
 ## Version 0.5.X
 

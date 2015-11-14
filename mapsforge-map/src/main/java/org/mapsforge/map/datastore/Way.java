@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.datastore;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.mapsforge.core.model.LatLong;
@@ -65,7 +66,7 @@ public class Way {
 			return false;
 		} else if (this.labelPosition == null && other.labelPosition != null) {
 			return false;
-		} else if (this.labelPosition!= null && this.labelPosition.equals(other.labelPosition)) {
+		} else if (this.labelPosition!= null && !this.labelPosition.equals(other.labelPosition)) {
 			return false;
 		} else if (this.latLongs.length != other.latLongs.length) {
 			return false;
@@ -91,7 +92,7 @@ public class Way {
 		int result = 1;
 		result = prime * result + layer;
 		result = prime * result + tags.hashCode();
-		result = prime * result + latLongs.hashCode();
+		result = prime * result + Arrays.deepHashCode(latLongs);
 		if (labelPosition != null) {
 			result = prime * result + labelPosition.hashCode();
 		}

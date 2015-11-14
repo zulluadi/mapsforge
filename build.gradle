@@ -13,11 +13,11 @@ def filterProjects(filter) {
 }
 
 allprojects {
-  group = 'org.mapsforge'
-  version = 'rotation-SNAPSHOT'
-  ext.androidBuildVersionTools = "23.0.1"
-  ext.jUnitVersion = "4.11"
-  description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
+    group = 'org.mapsforge'
+    version = 'rotation-SNAPSHOT'
+    ext.androidBuildVersionTools = "23.0.2"
+    ext.jUnitVersion = "4.11"
+    description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
 
 // no injection of functions, so via inheritance
@@ -69,7 +69,7 @@ configure(filterProjects(project.javaprojects)) {
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras"]
 project.ext.androidapkprojects = ["Samples"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 

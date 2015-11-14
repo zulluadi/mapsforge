@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,42 +13,24 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.swing.controller;
+package org.mapsforge.map.awt.input;
+
+import org.mapsforge.map.awt.view.MapView;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
-import org.mapsforge.map.model.MapViewDimension;
-import org.mapsforge.map.swing.view.MapView;
-
-public class MapViewComponentListener implements ComponentListener {
+public class MapViewComponentListener extends ComponentAdapter {
 	private final MapView mapView;
-	private final MapViewDimension mapViewDimension;
 
-	public MapViewComponentListener(MapView mapView, MapViewDimension mapViewDimension) {
+	public MapViewComponentListener(MapView mapView) {
 		this.mapView = mapView;
-		this.mapViewDimension = mapViewDimension;
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent componentEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent componentEvent) {
-		// do nothing
 	}
 
 	@Override
 	public void componentResized(ComponentEvent componentEvent) {
 		Dimension size = this.mapView.getSize();
-		this.mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
-	}
-
-	@Override
-	public void componentShown(ComponentEvent componentEvent) {
-		// do nothing
+		this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
 	}
 }
