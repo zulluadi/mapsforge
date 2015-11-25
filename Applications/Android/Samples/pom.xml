@@ -118,7 +118,7 @@
 		<dependency>
 			<groupId>android</groupId>
 			<artifactId>android</artifactId>
-			<version>6.0_r1</version>
+			<version>6.0_r2</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>android.support</groupId>
 			<artifactId>compatibility-v4</artifactId>
-			<version>23.1.0</version>
+			<version>23.1.1</version>
 		</dependency>
 	</dependencies>
 </project>
