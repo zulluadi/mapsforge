@@ -15,14 +15,6 @@
  */
 package org.mapsforge.map.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
@@ -30,6 +22,14 @@ import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.TilePosition;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 public final class LayerUtil {
 
@@ -71,10 +71,11 @@ public final class LayerUtil {
 			}
 		}
 
-		LOGGER.severe("Rotation Tiles org  --------------------- " );
+		// Debug
+		/*LOGGER.severe("Rotation Tiles org  --------------------- " );
 		for (Tile tile : tiles) {
 			LOGGER.severe("Rotation tile " + tile);
-		}
+		}*/
 
 		return tiles;
 	}
