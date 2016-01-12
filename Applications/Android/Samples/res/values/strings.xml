@@ -90,11 +90,13 @@
     <string name="preferences_r4_waterbodies_desc">Show lakes, rivers etc</string>
 
     <string name="dialog_location_title">Coordinates</string>
+    <string name="dialog_reverse_geocoding_title">Reverse Geocoding</string>
 
     <string name="startup_dontshowagain">Don\'t show again</string>
     <string name="startup_message">To run this samples app, you need any map with filename germany.map installed on storage.</string>
     <string name="startup_message_tilestore">To run this sample activity, you need a TMS tile store at /sdcard/tilestore. Sample data in the Samples/data directory.</string>
     <string name="startup_message_multimap">To run this sample activity, you need to download a low-resolution world map first.</string>
     <string name="startup_message_twomaps">To run this sample activity, you need also a map with filename second.map installed on storage.</string>
+    <string name="startup_message_poi">To run this sample activity, you need a poi with filename germany.poi installed on storage.</string>
 
 </resources>

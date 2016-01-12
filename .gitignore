@@ -26,3 +26,6 @@ build
 *~
 [#]*[#]
 .\#*
+
+# sqlite3-android
+sqlite3-android/obj

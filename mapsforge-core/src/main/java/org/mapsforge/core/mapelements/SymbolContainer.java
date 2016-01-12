@@ -26,14 +26,14 @@ import org.mapsforge.core.model.Rotation;
 
 public class SymbolContainer extends MapElementContainer {
 
-        final boolean alignCanvas; // if it has a fixed angle to canvas.
-        final boolean alignCenter;
+	final boolean alignCanvas; // if it has a fixed angle to canvas.
+	final boolean alignCenter;
 	public Bitmap symbol;
 	public final float theta;
 
 
 	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, boolean alignCanvas) {
-		this(point, display, priority, symbol, 0, true, true);
+		this(point, display, priority, symbol, 0, true, alignCanvas);
 	}
 
 	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, float theta, boolean alignCenter, boolean alignCanvas) {

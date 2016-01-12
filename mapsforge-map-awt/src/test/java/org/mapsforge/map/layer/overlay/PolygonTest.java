@@ -25,6 +25,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
@@ -53,21 +54,21 @@ public class PolygonTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			polygon.draw(boundingBox, (byte) 0, canvas, point, null);
+			polygon.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
-			polygon.getLatLongs().add(new LatLong(0, 0, true));
-			polygon.getLatLongs().add(new LatLong(1, 1, true));
-			polygon.draw(boundingBox, (byte) 0, canvas, point, null);
+			polygon.getLatLongs().add(new LatLong(0, 0));
+			polygon.getLatLongs().add(new LatLong(1, 1));
+			polygon.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
 			polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
 			polygon.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-			polygon.draw(boundingBox, (byte) 0, canvas, point, null);
+			polygon.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 		}
 	}
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 

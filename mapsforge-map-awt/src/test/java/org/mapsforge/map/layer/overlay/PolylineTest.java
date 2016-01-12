@@ -25,6 +25,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
@@ -51,20 +52,20 @@ public class PolylineTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			polyline.draw(boundingBox, (byte) 0, canvas, point, null);
+			polyline.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
-			polyline.getLatLongs().add(new LatLong(0, 0, true));
-			polyline.getLatLongs().add(new LatLong(1, 1, true));
-			polyline.draw(boundingBox, (byte) 0, canvas, point, null);
+			polyline.getLatLongs().add(new LatLong(0, 0));
+			polyline.getLatLongs().add(new LatLong(1, 1));
+			polyline.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
 			polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-			polyline.draw(boundingBox, (byte) 0, canvas, point, null);
+			polyline.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 		}
 	}
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Polyline polyline = new Polyline(null, GRAPHIC_FACTORY);

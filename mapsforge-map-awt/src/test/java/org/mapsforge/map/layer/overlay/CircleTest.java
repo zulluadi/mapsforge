@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
@@ -45,7 +46,7 @@ public class CircleTest {
 
 	@Test
 	public void constructorTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		int radius = 3;
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
@@ -70,25 +71,25 @@ public class CircleTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			circle.draw(boundingBox, (byte) 0, canvas, point, null);
+			circle.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
-			circle.setLatLong(new LatLong(0, 0, true));
-			circle.draw(boundingBox, (byte) 0, canvas, point, null);
+			circle.setLatLong(new LatLong(0, 0));
+			circle.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
 			circle.setRadius(1);
-			circle.draw(boundingBox, (byte) 0, canvas, point, null);
+			circle.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
 			circle.setPaintFill(GRAPHIC_FACTORY.createPaint());
-			circle.draw(boundingBox, (byte) 0, canvas, point, null);
+			circle.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
 			circle.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-			circle.draw(boundingBox, (byte) 0, canvas, point, null);
+			circle.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 		}
 	}
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(1, 2, true);
+		LatLong latLong = new LatLong(1, 2);
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 

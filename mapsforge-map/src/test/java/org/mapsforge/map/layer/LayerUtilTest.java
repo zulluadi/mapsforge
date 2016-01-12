@@ -33,7 +33,7 @@ public class LayerUtilTest {
 		for (int tileSize : TILE_SIZES) {
 			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
 			List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, Rotation.NULL_ROTATION,
-					tileSize, new Point(0, 0));
+					new Point(0, 0), tileSize);
 			Assert.assertEquals(1, tilePositions.size());
 
 			TilePosition tilePosition = tilePositions.get(0);

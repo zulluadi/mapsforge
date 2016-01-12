@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +15,13 @@
  */
 package org.mapsforge.map.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
@@ -23,20 +30,10 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.TilePosition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
 public final class LayerUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(LayerUtil.class.getName());
-
-
-	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, final Rotation rotation, int tileSize, Point topLeftPoint) {
+	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Rotation rotation, Point topLeftPoint,
+			int tileSize) {
 		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
@@ -57,7 +54,43 @@ public final class LayerUtil {
 		return tilePositions;
 	}
 
-	public static Set<Tile> getTiles(BoundingBox boundingBox, final Rotation rotation, byte zoomLevel, int tileSize) {
+	/**
+	 * Upper left tile for an area.
+	 * @param boundingBox the area boundingBox
+	 * @param zoomLevel the zoom level.
+	 * @param tileSize the tile size.
+	 * @return the tile at the upper left of the bbox.
+	 */
+	public static Tile getUpperLeft(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
+		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		return new Tile(tileLeft, tileTop, zoomLevel, tileSize);
+	}
+
+	/**
+	 * Lower right tile for an area.
+	 * @param boundingBox the area boundingBox
+	 * @param zoomLevel the zoom level.
+	 * @param tileSize the tile size.
+	 * @return the tile at the lower right of the bbox.
+	 */
+	public static Tile getLowerRight(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
+		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		int tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+		return new Tile(tileRight, tileBottom, zoomLevel, tileSize);
+	}
+
+	public static Set<Tile> getTiles(Tile upperLeft, Tile lowerRight) {
+		Set<Tile> tiles = new HashSet<Tile>();
+		for (int tileY = upperLeft.tileY; tileY <= lowerRight.tileY; ++tileY) {
+			for (int tileX = upperLeft.tileX; tileX <= lowerRight.tileX; ++tileX) {
+				tiles.add(new Tile(tileX, tileY, upperLeft.zoomLevel, upperLeft.tileSize));
+			}
+		}
+		return tiles;
+	}
+
+	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
 		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
@@ -70,13 +103,6 @@ public final class LayerUtil {
 				tiles.add(new Tile(tileX, tileY, zoomLevel, tileSize));
 			}
 		}
-
-		// Debug
-		/*LOGGER.severe("Rotation Tiles org  --------------------- " );
-		for (Tile tile : tiles) {
-			LOGGER.severe("Rotation tile " + tile);
-		}*/
-
 		return tiles;
 	}
 

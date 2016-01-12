@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,14 +16,14 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.util.List;
-
-import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.Way;
+
+import java.util.List;
 
 /**
  * A PolylineContainer encapsulates the way data retrieved from a map file.
@@ -40,29 +41,32 @@ public class PolylineContainer implements ShapeContainer {
 	private Point[][] coordinatesRelativeToTile;
 	private final List<Tag> tags;
 	private final byte layer;
-	private final Tile tile;
+	private final Tile upperLeft;
+	private final Tile lowerRight;
 	private final boolean isClosedWay;
 	private Way way;
 
-	PolylineContainer(Way way, Tile tile) {
+	public PolylineContainer(Way way, Tile upperLeft, Tile lowerRight) {
 		this.coordinatesAbsolute = null;
 		this.coordinatesRelativeToTile = null;
 		this.tags = way.tags;
-		this.tile = tile;
+		this.upperLeft = upperLeft;
+		this.lowerRight = lowerRight;
 		layer = way.layer;
 		this.way = way;
-		this.isClosedWay = isClosedWay(way.latLongs[0]);
+		this.isClosedWay = LatLongUtils.isClosedWay(way.latLongs[0]);
 	}
 
-	PolylineContainer(Point[] coordinates, Tile tile, List<Tag> tags) {
+	public PolylineContainer(Point[] coordinates, final Tile upperLeft, final Tile lowerRight, List<Tag> tags) {
 		this.coordinatesAbsolute = new Point[1][];
 		this.coordinatesRelativeToTile = null;
 		this.coordinatesAbsolute[0] = new Point[coordinates.length];
 		System.arraycopy(coordinates, 0, coordinatesAbsolute[0], 0, coordinates.length);
 		this.tags = tags;
-		this.tile = tile;
+		this.upperLeft = upperLeft;
+		this.lowerRight = lowerRight;
 		this.layer = 0;
-		isClosedWay = coordinates[0].equals(coordinates[coordinates.length-1]);
+		isClosedWay = coordinates[0].equals(coordinates[coordinates.length - 1]);
 	}
 
 	public Point getCenterAbsolute() {
@@ -80,7 +84,7 @@ public class PolylineContainer implements ShapeContainer {
 			for (int i = 0; i < way.latLongs.length; ++i) {
 				coordinatesAbsolute[i] = new Point[way.latLongs[i].length];
 				for (int j = 0; j < way.latLongs[i].length; ++j) {
-					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.mapSize);
+					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], upperLeft.mapSize);
 				}
 			}
 			this.way = null;
@@ -88,9 +92,9 @@ public class PolylineContainer implements ShapeContainer {
 		return coordinatesAbsolute;
 	}
 
-	public Point[][] getCoordinatesRelativeToTile() {
+	public Point[][] getCoordinatesRelativeToOrigin() {
 		if (coordinatesRelativeToTile == null) {
-			Point tileOrigin = tile.getOrigin();
+			Point tileOrigin = upperLeft.getOrigin();
 			coordinatesRelativeToTile = new Point[getCoordinatesAbsolute().length][];
 			for (int i = 0; i < coordinatesRelativeToTile.length; ++ i) {
 				coordinatesRelativeToTile[i] = new Point[coordinatesAbsolute[i].length];
@@ -119,12 +123,11 @@ public class PolylineContainer implements ShapeContainer {
 		return isClosedWay;
 	}
 
-	public Tile getTile() {
-		return tile;
+	public Tile getUpperLeft() {
+		return this.upperLeft;
 	}
 
-	private boolean isClosedWay(LatLong[] latLongs) {
-		return latLongs[0].distance(latLongs[latLongs.length -1]) < 0.000000001;
+	public Tile getLowerRight() {
+		return this.lowerRight;
 	}
-
 }

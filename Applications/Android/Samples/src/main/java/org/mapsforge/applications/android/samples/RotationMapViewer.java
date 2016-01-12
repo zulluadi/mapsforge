@@ -19,19 +19,27 @@ import android.widget.Button;
 
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
+import org.mapsforge.map.layer.labels.LabelLayer;
+import org.mapsforge.map.layer.labels.LabelStore;
+import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
+import org.mapsforge.map.layer.labels.ThreadedLabelLayer;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
  * Experimental viewer supporting map rotation, not production ready yet and with interface
  * changes to come.
  */
-public class RotationMapViewer extends LongPressAction {
+public class RotationMapViewer extends RenderTheme4 {
 
 	private float rotationAngle;
 
 	@Override
 	protected void createControls() {
+		super.createControls();
+
 		// Three rotation buttons: rotate clockwise, reset, counterclockwise
 		Button rotateCWButton = (Button) findViewById(R.id.rotateClockwiseButton);
 		rotateCWButton.setOnClickListener(new View.OnClickListener() {
@@ -70,16 +78,29 @@ public class RotationMapViewer extends LongPressAction {
 
 	@Override
 	protected void createLayers() {
-		super.createLayers();
-		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileRendererLayer.getLabelStore());
+		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, false);
+		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+
+
+		MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
+				tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
+		LabelLayer labelLayer = createLabelLayer(labelStore);
 		mapView.getLayerManager().getLayers().add(labelLayer);
 		// add a grid layer and a layer showing tile coordinates
-		mapView.getLayerManager().getLayers()
+	mapView.getLayerManager().getLayers()
 				.add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
 		mapView.getLayerManager().getLayers()
 				.add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
-		mapView.getFpsCounter().setVisible(true);
+	}
 
+	protected LabelLayer createLabelLayer(LabelStore labelStore) {
+		return new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
+	}
+
+	@Override
+	protected int getLayoutId() {
+		return R.layout.rotation;
 	}
 
 	@Override
@@ -88,12 +109,4 @@ public class RotationMapViewer extends LongPressAction {
 		return 2f;
 	}
 
-	@Override
-	protected int getLayoutId() {
-		return R.layout.rotation;
-	}
-
-	protected boolean renderLabels() {
-		return false;
-	}
 }

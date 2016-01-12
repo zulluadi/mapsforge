@@ -30,20 +30,33 @@ final class EncodingTest {
 		int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
 		Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
-		MapReadResult mapReadResult = mapFile.readMapData(tile);
-		mapFile.close();
+		// read all labels data, ways should be empty as in the example the way does not carry a name tag
+		MapReadResult mapReadResult = mapFile.readLabels(tile);
+		Assert.assertFalse(mapReadResult == null);
+		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+		Assert.assertTrue(mapReadResult.ways.isEmpty());
+
+		// read only poi data, ways should be empty
+		mapReadResult = mapFile.readPoiData(tile);
+		Assert.assertFalse(mapReadResult == null);
+		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+		Assert.assertTrue(mapReadResult.ways.isEmpty());
+
+		mapReadResult = mapFile.readMapData(tile);
 
 		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 		Assert.assertEquals(1, mapReadResult.ways.size());
 
-		LatLong latLong1 = new LatLong(0.0, 0.0, true);
-		LatLong latLong2 = new LatLong(0.0, 0.1, true);
-		LatLong latLong3 = new LatLong(-0.1, 0.1, true);
-		LatLong latLong4 = new LatLong(-0.1, 0.0, true);
+		LatLong latLong1 = new LatLong(0.0, 0.0);
+		LatLong latLong2 = new LatLong(0.0, 0.1);
+		LatLong latLong3 = new LatLong(-0.1, 0.1);
+		LatLong latLong4 = new LatLong(-0.1, 0.0);
 		LatLong[][] latLongsExpected = new LatLong[][] { { latLong1, latLong2, latLong3, latLong4, latLong1 } };
 
 		Way way = mapReadResult.ways.get(0);
 		Assert.assertArrayEquals(latLongsExpected, way.latLongs);
+
+		mapFile.close();
 	}
 
 	private EncodingTest() {

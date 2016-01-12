@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
@@ -32,7 +33,7 @@ public class MarkerTest {
 
 	@Test
 	public void constructorTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
 		Marker marker = new Marker(latLong, bitmap, 1, 2);
@@ -52,19 +53,19 @@ public class MarkerTest {
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 			Point point = new Point(0, 0);
-			marker.draw(boundingBox, (byte) 0, canvas, point, null);
+			marker.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
-			marker.setLatLong(new LatLong(0, 0, true));
-			marker.draw(boundingBox, (byte) 0, canvas, point, null);
+			marker.setLatLong(new LatLong(0, 0));
+			marker.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
 			marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
-			marker.draw(boundingBox, (byte) 0, canvas, point, null);
+			marker.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 		}
 	}
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
 		Marker marker = new Marker(null, null, 0, 0);

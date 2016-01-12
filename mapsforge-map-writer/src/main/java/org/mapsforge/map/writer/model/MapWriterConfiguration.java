@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,7 +35,6 @@ public class MapWriterConfiguration {
 	private String comment;
 
 	private String dataProcessorType;
-	private long date;
 
 	private boolean debugStrings;
 	private EncodingChoice encodingChoice;
@@ -66,7 +66,7 @@ public class MapWriterConfiguration {
 	 */
 	public void addBboxConfiguration(String bbox) {
 		if (bbox != null) {
-			setBboxConfiguration(org.mapsforge.core.model.BoundingBox.fromString(bbox));
+			setBboxConfiguration(BoundingBox.fromString(bbox));
 		}
 	}
 
@@ -138,6 +138,18 @@ public class MapWriterConfiguration {
 
 	/**
 	 * Convenience method.
+	 *
+	 * @param preferredLanguages
+	 *            the preferred language(s) separated with ','
+	 */
+	public void addPreferredLanguages(String preferredLanguages) {
+		if (preferredLanguages != null && !preferredLanguages.trim().isEmpty()) {
+			setPreferredLanguages(Arrays.asList(preferredLanguages.split(",")));
+		}
+	}
+
+	/**
+	 * Convenience method.
 	 * 
 	 * @param zoomIntervalConfiguaration
 	 *            the zoom interval configuration
@@ -176,13 +188,6 @@ public class MapWriterConfiguration {
 	 */
 	public String getDataProcessorType() {
 		return this.dataProcessorType;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public long getDate() {
-		return this.date;
 	}
 
 	/**
@@ -363,14 +368,6 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(long date) {
-		this.date = date;
-	}
-
-	/**
 	 * @param debugStrings
 	 *            the debugStrings to set
 	 */
@@ -436,12 +433,10 @@ public class MapWriterConfiguration {
 
 	/**
 	 * @param preferredLanguages
-	 *            the preferred language(s) to set separated with ','
+	 *            the preferred language(s) to set
 	 */
-	public void setPreferredLanguages(String preferredLanguages) {
-		if (preferredLanguages != null && !preferredLanguages.trim().isEmpty()) {
-			this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
-		}
+	public void setPreferredLanguages(List<String> preferredLanguages) {
+		this.preferredLanguages = preferredLanguages;
 	}
 
 	/**

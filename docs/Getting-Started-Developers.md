@@ -1,4 +1,3 @@
-
 # Getting Started
 
 **A quick description for developers of how to get started with mapsforge.**
@@ -26,23 +25,27 @@ Mapsforge consists of the following core components:
 - mapsforge-core: platform unspecific general components and interfaces.
 - mapsforge-map: platform unspecific elements used for map display.
 - mapsforge-map-reader: platform unspecific code to read mapsforge map files.
+- mapsforge-poi: platform unspecific poi elements.
 - [kXML2](http://www.kxml.org/): lightweight XML parser for render themes.
 
 Extra Android components:
 
-- mapsforge-map-android: android specific elements.
-- mapsforge-map-android-extras: android extra elements.
+- mapsforge-map-android: android specific map elements.
+- mapsforge-map-android-extras: android extra map elements.
+- mapsforge-poi-android: android specific poi elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
+- sqlite3-android: SQLite wrapper for accessing and creating SQLite database files in Android.
 
 Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
+- mapsforge-poi-awt: java specific poi elements.
 - [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons. Improved jar can be found at the site.
- 
+- [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC library for accessing and creating SQLite database files in Java.
+
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
 
 External dependencies jars can be found at their respective sites or simply searching them in [Maven central repository](http://search.maven.org/).
-
 
 ### Branches
 
@@ -51,7 +54,7 @@ The mapsforge code has now been consolidated into two main branches as well as r
 - **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
 - **release**: use this if you want to build applications built on top of well-tested and stable code.
 
-Code before the 0.5.1 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
+Code before the 0.6.0 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
 
 ## Development Applications
 
@@ -72,15 +75,15 @@ The SwingMapViewer is a simple Java only app useful for testing maps.
 
 ### Building mapsforge with Gradle
 
-Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. 
+Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. We use the Gradle Wrapper script, which also installs the required version of Gradle.
 
 After checking out the code, a build from the command line should be as easy as 
 
-    gradle clean build
+    ./gradlew clean build
 
 If you want to skip the tests, run 
 
-    gradle clean assemble
+    ./gradlew clean assemble
 
 After the build completes successfully you will find the Samples app in the directory Applications/Android/Samples/build/apk. Currently the build results in unsigned apks.  
 
@@ -88,10 +91,9 @@ After the build completes successfully you will find the Samples app in the dire
 
 Android Studio integrates tightly with gradle. The easiest way to create a new application is to follow the example of the Samples app. 
 
-
 ### Building mapsforge with Maven
 
-A second way to build mapsforge is using maven. This was the original way of building mapsforge.
+A second way to build mapsforge is using maven. This was the original way of building mapsforge. We still maintain this, but as Google does not actively support it, we discourage its use. New developments, certainly for Android, should use Gradle.
 
 The mapsforge project uses the free [Apache maven](http://maven.apache.org/) tool to automatize the build process. Only version 3.1.1 and up can be used. If you want to learn more about maven, please refer to the [official documentation](http://maven.apache.org/guides/index.html).
 
@@ -105,8 +107,9 @@ In the beginning, maven automatically downloads all missing plug-ins and files. 
 
 During the build process, maven compiles, tests and packages all modules in the correct order. A new directory `target` is created for each module which contains – among test reports and other generated files – the new artifacts. Eventually these artifacts are installed in your local repository so that you can use them in other maven projects.
 
-
 ### Start developing with Eclipse
+
+Note that Google has announced that it will not support Eclipse any more in the near future. Google has published a guide to [migrate a project from Eclipse to Android Studio](https://developer.android.com/sdk/installing/migrate.html). 
 
 If you want to contribute to the mapsforge project, we recommend to use the latest stable version of the [Eclipse IDE](http://eclipse.org/).
 
@@ -137,6 +140,22 @@ To build the Android sample application, you need to make a few adjustments:
 * Then clean the project (`Project > Clean`).
 
 Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
+
+### JitPack
+
+We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for publishing Mapsforge. This can be used for our releases but it's also useful for using SNAPSHOT builds in your application (which are not in Maven central).
+
+For example in order to include the `mapsforge-core` module `master-SNAPSHOT` with Gradle.
+
+Add as repository:
+
+`maven { url "https://jitpack.io" }`
+
+And declare as dependency:
+
+`compile 'com.github.mapsforge.mapsforge:mapsforge-core:master-SNAPSHOT'`
+
+The same syntax applies for all Mapsforge modules. And with similar way you can declare the dependencies in Maven too.
 
 ## How to contribute
 

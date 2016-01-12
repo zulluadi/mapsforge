@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Ludwig M Brinckmann
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,10 +52,10 @@ public class LongPressAction extends RenderTheme4 {
 
 	@Override
 	protected void createLayers() {
-		this.tileRendererLayer = new TileRendererLayer(
+		tileRendererLayer = new TileRendererLayer(
 				this.tileCaches.get(0), getMapFile(),
 				this.mapView.getModel().mapViewPosition,
-				false, renderLabels(),
+				false, true, false,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point thisXY,
@@ -82,24 +82,15 @@ public class LongPressAction extends RenderTheme4 {
 
 			@Override
 			public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
-					canvas, Point topLeftPoint, final Rotation rotation) {
+					canvas, Point topLeftPoint, Rotation rotation) {
 				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
 
 				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 
-				double pixelX = MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x;
-				double pixelY = MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y;
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x);
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y);
 				String text = Integer.toString(count);
-				canvas.save();
-				if (rotation != null) {
-					canvas.rotate(rotation.reverseRotation());
-					Point rotated = rotation.rotate(pixelX, pixelY);
-					pixelX = rotated.x;
-					pixelY = rotated.y;
-				}
-
-				canvas.drawText(text, (int) (pixelX - BLACK.getTextWidth(text) / 2), (int) (pixelY + BLACK.getTextHeight(text) / 2), BLACK);
-				canvas.restore();
+				canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
 			}
 
 			@Override
@@ -137,13 +128,5 @@ public class LongPressAction extends RenderTheme4 {
 		this.mapView.getLayerManager().getLayers().add(tappableCircle);
 		tappableCircle.requestRedraw();
 
-	}
-
-	/**
-	 * Controls rendering of labels.
-	 * @return true if the labels should be rendered by the main layer
-	 */
-	protected boolean renderLabels() {
-		return true;
 	}
 }
