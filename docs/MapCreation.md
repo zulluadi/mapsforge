@@ -130,7 +130,13 @@ With the above procedure complicated coastline areas are all now rendered correc
 
 # World map creation
 
-We use land polygons from [OpenStreetMap Data](https://osmdata.openstreetmap.de/), specifically the https://osmdata.openstreetmap.de/download/simplified-land-polygons-complete-3857.zip variant.
+We use land polygons from [OpenStreetMap Data](https://osmdata.openstreetmap.de/), specifically the https://osmdata.openstreetmap.de/download/simplified-land-polygons-complete-3857.zip variant. 
+
+Reproject the simplified land poligons to WGS84 using:
+
+```bash
+ogr2ogr -t_srs EPSG:4326 outputwith4236.shp input.shp 
+```
 
 The process is completed successfully in some minutes giving the map in our [server](http://download.mapsforge.org/maps/world/).
 Alternatively the non simplified variants can be used too.
